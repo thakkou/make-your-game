@@ -1,7 +1,6 @@
-// game logic (movement, game over...)
+import { boardWidth, boardHeight, stepTimeSec } from "./global.js";
 
-import { boardWidth, boardHeight } from "./global.js";
-
+let stepTimer = 0.0;
 const piecesTemplate = {
   O: [
     "00",
@@ -62,14 +61,19 @@ let fullSquares = []; // {x, y}
             current = rotate90(current);
         }
     }
+    console.log(piecesCache); // TEMP
+
+    // start game
+    spawnNextPiece();
 })();
 
-console.log(piecesCache); // TEMP
 
 /**
  * main function for positioning pieces
  * @param {number} x - X position of the most top left block
  * @param {number} y - y position of the most top left block
+ * @param {string} pieceType - type (O, I, L etc...)
+ * @param {number} rotation - 90 degrees interval
  * @returns {boolean} false if placement is not possible
  */
 function placePieceAt(x, y, pieceType, rotation) {
@@ -102,5 +106,53 @@ function placePieceAt(x, y, pieceType, rotation) {
         }
     }
 
+    // TODO: render to dom
+
     return true;
+}
+
+function spawnNextPiece(){
+    if (nextPieceType === null){ // true on first call
+        nextPieceType = ["O", "I", "T", "L", "Z"][Math.floor(Math.random() * myArray.length)]
+    }
+
+    currPieceType = nextPieceType;
+    currPieceRotation = 0;
+    currPieceX = boardWidth/2;
+    currPieceY = 0;
+
+    nextPieceType = ["O", "I", "T", "L", "Z"][Math.floor(Math.random() * myArray.length)]
+
+    // TODO: send event to menus.js to draw next piece
+}
+
+function eraseCurrentPiece(){
+    // TODO: erase from dom by toggling proper classes
+}
+
+// game loop
+window.requestAnimationFrame(update)
+
+function update(timestamp){
+    stepTimer += timestamp;
+    if (stepTimer < stepTimeSec){
+        window.requestAnimationFrame(update);
+        return;
+    }
+    stepTimer = 0.0;
+    
+    // curr piece y+1
+    let moved = placePieceAt(currPieceX, currPieceY+1, currPieceType, currPieceRotation);
+    if (moved == false){
+        // hit the floor
+        spawnNextPiece();
+
+        // TODO: code for winning and loosing
+    } else {
+        eraseCurrentPiece();
+    }
+
+    // TODO: apply controls
+
+    window.requestAnimationFrame(update);
 }

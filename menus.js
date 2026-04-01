@@ -1,5 +1,3 @@
-// menus logic (score, time...)
-
 const pauseEvent = new CustomEvent('event-pause');
 const unpauseEvent = new CustomEvent('event-unpause');
 
