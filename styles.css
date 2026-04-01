@@ -17,13 +17,11 @@
     --accent: #f0f0f0;
 
     /* piece colours */
-    --c-I: #00bcd4;
     --c-O: #ffeb3b;
+    --c-I: #00bcd4;
     --c-T: #9c27b0;
-    --c-S: #4caf50;
-    --c-Z: #f44336;
     --c-L: #ff9800;
-    --c-J: #2196f3;
+    --c-Z: #f44336;
 
     --cell: 30px;
     --gap: 1px;
@@ -96,20 +94,12 @@ h1 {
     background: var(--c-T);
 }
 
-.cell.S {
-    background: var(--c-S);
-}
-
 .cell.Z {
     background: var(--c-Z);
 }
 
 .cell.L {
     background: var(--c-L);
-}
-
-.cell.J {
-    background: var(--c-J);
 }
 
 /* Active (falling) piece highlight */
