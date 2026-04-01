@@ -21,175 +21,23 @@
     </div>
 
     <div class="panel">
-      <div class="panel-label">Lines</div>
-      <div class="panel-value">042</div>
+      <div class="panel-label">Lives</div>
+      <div class="panel-value">1/4</div>
     </div>
 
     <div class="panel">
-      <div class="panel-label">Level</div>
-      <div class="panel-value">05</div>
+      <div class="panel-label">Time</div>
+      <div class="panel-value">00:00</div>
       <div class="level-bar-track">
         <div class="level-bar-fill"></div>
       </div>
     </div>
-
-    <div class="panel">
-      <div class="panel-label">Hold</div>
-      <div class="hold-grid">
-        <!-- J piece: row 1 -->
-        <div class="hold-cell"></div>
-        <div class="hold-cell"></div>
-        <div class="hold-cell J"></div>
-        <div class="hold-cell"></div>
-        <!-- row 2 -->
-        <div class="hold-cell J"></div>
-        <div class="hold-cell J"></div>
-        <div class="hold-cell J"></div>
-        <div class="hold-cell"></div>
-        <!-- row 3 -->
-        <div class="hold-cell"></div>
-        <div class="hold-cell"></div>
-        <div class="hold-cell"></div>
-        <div class="hold-cell"></div>
-        <!-- row 4 -->
-        <div class="hold-cell"></div>
-        <div class="hold-cell"></div>
-        <div class="hold-cell"></div>
-        <div class="hold-cell"></div>
-      </div>
-    </div>
-
   </div>
 
   <!-- BOARD -->
   <div class="board-container">
     <div class="board">
-
-      <!--
-        10 cols × 20 rows = 200 cells
-        Rows 1-14: mostly empty, with some placed pieces at the bottom
-        We use inline class names to colour cells.
-      -->
-
-      <!-- ROW 1  (top, empty) -->
-      <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
-      <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
-
-      <!-- ROW 2 -->
-      <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
-      <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
-
-      <!-- ROW 3 -->
-      <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
-      <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
-
-      <!-- ROW 4  – T-piece falling (active, cols 4-6) -->
-      <div class="cell"></div><div class="cell"></div><div class="cell"></div>
-      <div class="cell T active"></div><div class="cell T active"></div><div class="cell T active"></div>
-      <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
-
-      <!-- ROW 5  – T-piece center -->
-      <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
-      <div class="cell T active"></div>
-      <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
-
-      <!-- ROW 6 -->
-      <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
-      <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
-
-      <!-- ROW 7 -->
-      <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
-      <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
-
-      <!-- ROW 8 – ghost of T piece -->
-      <div class="cell"></div><div class="cell"></div><div class="cell"></div>
-      <div class="cell ghost"></div><div class="cell ghost"></div><div class="cell ghost"></div>
-      <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
-
-      <!-- ROW 9 – ghost centre -->
-      <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
-      <div class="cell ghost"></div>
-      <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
-
-      <!-- ROW 10 -->
-      <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
-      <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
-
-      <!-- ROW 11 – start of placed pieces -->
-      <div class="cell"></div><div class="cell"></div>
-      <div class="cell I"></div><div class="cell I"></div><div class="cell I"></div><div class="cell I"></div>
-      <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
-
-      <!-- ROW 12 -->
-      <div class="cell"></div><div class="cell"></div><div class="cell"></div>
-      <div class="cell S"></div><div class="cell S"></div>
-      <div class="cell"></div>
-      <div class="cell Z"></div><div class="cell Z"></div>
-      <div class="cell"></div><div class="cell"></div>
-
-      <!-- ROW 13 -->
-      <div class="cell"></div>
-      <div class="cell S"></div><div class="cell S"></div>
-      <div class="cell"></div>
-      <div class="cell Z"></div><div class="cell Z"></div>
-      <div class="cell L"></div><div class="cell L"></div><div class="cell L"></div>
-      <div class="cell"></div>
-
-      <!-- ROW 14 -->
-      <div class="cell J"></div><div class="cell J"></div>
-      <div class="cell O"></div><div class="cell O"></div>
-      <div class="cell L"></div>
-      <div class="cell"></div>
-      <div class="cell L"></div>
-      <div class="cell"></div>
-      <div class="cell J"></div><div class="cell J"></div>
-
-      <!-- ROW 15 -->
-      <div class="cell J"></div>
-      <div class="cell O"></div><div class="cell O"></div>
-      <div class="cell I"></div><div class="cell I"></div><div class="cell I"></div><div class="cell I"></div>
-      <div class="cell T"></div><div class="cell T"></div><div class="cell T"></div>
-
-      <!-- ROW 16 -->
-      <div class="cell S"></div><div class="cell S"></div>
-      <div class="cell Z"></div><div class="cell Z"></div>
-      <div class="cell O"></div><div class="cell O"></div>
-      <div class="cell J"></div>
-      <div class="cell T"></div>
-      <div class="cell L"></div><div class="cell L"></div>
-
-      <!-- ROW 17 -->
-      <div class="cell S"></div>
-      <div class="cell Z"></div><div class="cell Z"></div>
-      <div class="cell O"></div><div class="cell O"></div>
-      <div class="cell J"></div><div class="cell J"></div><div class="cell J"></div>
-      <div class="cell L"></div>
-      <div class="cell"></div>
-
-      <!-- ROW 18 – nearly full -->
-      <div class="cell I"></div><div class="cell I"></div><div class="cell I"></div><div class="cell I"></div>
-      <div class="cell T"></div><div class="cell T"></div><div class="cell T"></div>
-      <div class="cell S"></div><div class="cell S"></div>
-      <div class="cell"></div>
-
-      <!-- ROW 19 – almost full -->
-      <div class="cell L"></div><div class="cell O"></div><div class="cell O"></div>
-      <div class="cell Z"></div><div class="cell Z"></div>
-      <div class="cell J"></div><div class="cell J"></div><div class="cell J"></div>
-      <div class="cell L"></div><div class="cell L"></div>
-
-      <!-- ROW 20 – bottom (full row, clearing) -->
-      <div class="cell I clear"></div>
-      <div class="cell O clear"></div>
-      <div class="cell T clear"></div>
-      <div class="cell S clear"></div>
-      <div class="cell Z clear"></div>
-      <div class="cell L clear"></div>
-      <div class="cell J clear"></div>
-      <div class="cell I clear"></div>
-      <div class="cell O clear"></div>
-      <div class="cell T clear"></div>
-
+      <!-- board is setup in js -->
     </div>
 
     <!-- GAME OVER OVERLAY — set display:block to show -->
@@ -236,9 +84,7 @@
         <div class="ctrl-row"><span>Rotate</span>   <span><span class="key">↑</span></span></div>
         <div class="ctrl-row"><span>Soft drop</span><span><span class="key">↓</span></span></div>
         <div class="ctrl-row"><span>Hard drop</span><span><span class="key">SPC</span></span></div>
-        <div class="ctrl-row"><span>Hold</span>     <span><span class="key">C</span></span></div>
         <div class="ctrl-row"><span>Pause</span>    <span><span class="key">P</span></span></div>
-        <div class="ctrl-row"><span>Restart</span>  <span><span class="key">R</span></span></div>
       </div>
     </div>
 
@@ -251,7 +97,6 @@
 
 </div><!-- /game-wrapper -->
 
-<footer>CSS-only UI mockup &mdash; add JS to play</footer>
-
+<script src="main.js"></script>
 </body>
 </html>

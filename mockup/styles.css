@@ -112,6 +112,13 @@ h1 {
     background: var(--c-J);
 }
 
+/* Ghost piece */
+.cell.ghost {
+    background: transparent;
+    outline: 2px solid var(--dim);
+    outline-offset: -2px;
+}
+
 /* Active (falling) piece highlight */
 .cell.active {
     filter: brightness(1.25);
@@ -178,7 +185,6 @@ h1 {
     gap: 1px;
     background: var(--grid-line);
     margin-top: 4px;
-    width: fit-content;
 }
 
 .next-cell {
