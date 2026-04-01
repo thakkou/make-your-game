@@ -1,5 +1,7 @@
 import { boardWidth, boardHeight, stepTimeSec } from "./global.js";
 
+const boardEl = document.querySelector(".board");
+
 let stepTimer = 0.0;
 const piecesTemplate = {
   O: [
@@ -25,6 +27,9 @@ const piecesTemplate = {
 const rotations = [
     0, 90, 180, 270,
 ]
+const types = [
+    "O", "I", "T", "L", "Z"
+]
 
 let currPieceType, currPieceX, currPieceY, currPieceRotation;
 let nextPieceType;
@@ -32,7 +37,13 @@ let nextPieceType;
 let piecesCache = {};
 let fullSquares = []; // {x, y}
 
+// setup
 (() => {
+    // setup cells
+    for (let i = 0; i < boardWidth * boardHeight; i++){
+        boardEl.insertAdjacentHTML("beforeend", `<div class="cell"></div>`);
+    }
+
     // cache all possible rotations of all pieces so we don't recalculate it
     function rotate90(current) {
         const rowLen = current.length;
@@ -77,7 +88,7 @@ let fullSquares = []; // {x, y}
  * @returns {boolean} false if placement is not possible
  */
 function placePieceAt(x, y, pieceType, rotation) {
-    if (!(pieceType in piecesTemplate) || rotations.includes(rotation) == false){
+    if (!(pieceType in types) || rotations.includes(rotation) == false){
         // bad args
         return false;
     }
@@ -106,14 +117,26 @@ function placePieceAt(x, y, pieceType, rotation) {
         }
     }
 
-    // TODO: render to dom
+    // render to dom
+    const cells = boardEl.children;
+    for (let row = 0; row < height; row++) {
+        for (let col = 0; col < width; col++) {
+            if (shape[row][col] !== " ") {
+                const boardX = x + col;
+                const boardY = y + row;
+
+                const index = boardY * boardWidth + boardX;
+                cells[index].classList.add("active");
+            }
+        }
+    }
 
     return true;
 }
 
 function spawnNextPiece(){
     if (nextPieceType === null){ // true on first call
-        nextPieceType = ["O", "I", "T", "L", "Z"][Math.floor(Math.random() * myArray.length)]
+        nextPieceType = types[Math.floor(Math.random() * types.length)]
     }
 
     currPieceType = nextPieceType;
@@ -121,13 +144,28 @@ function spawnNextPiece(){
     currPieceX = boardWidth/2;
     currPieceY = 0;
 
-    nextPieceType = ["O", "I", "T", "L", "Z"][Math.floor(Math.random() * myArray.length)]
+    nextPieceType = types[Math.floor(Math.random() * types.length)]
 
     // TODO: send event to menus.js to draw next piece
 }
 
-function eraseCurrentPiece(){
-    // TODO: erase from dom by toggling proper classes
+function eraseCurrentPiece() {
+    const shape = piecesCache[currPieceType][currPieceRotation];
+    const cells = boardEl.children;
+    const height = shape.length;
+    const width = shape[0].length;
+
+    for (let row = 0; row < height; row++) {
+        for (let col = 0; col < width; col++) {
+            if (shape[row][col] !== " ") {
+                const boardX = currPieceX + col;
+                const boardY = currPieceY + row;
+                const index = boardY * boardWidth + boardX;
+
+                cells[index].classList.remove("active");
+            }
+        }
+    }
 }
 
 // game loop
@@ -146,6 +184,21 @@ function update(timestamp){
     if (moved == false){
         // hit the floor
         spawnNextPiece();
+
+        // add to fullSquares
+        const shape = piecesCache[currPieceType][currPieceRotation];
+        const height = shape.length;
+        const width = shape[0].length;
+        for (let row = 0; row < height; row++) {
+            for (let col = 0; col < width; col++) {
+                if (shape[row][col] !== " ") {
+                    const boardX = currPieceX + col;
+                    const boardY = currPieceY + row;
+
+                    fullSquares.push({ x: boardX, y: boardY });
+                }
+            }
+        }
 
         // TODO: code for winning and loosing
     } else {
