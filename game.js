@@ -74,16 +74,33 @@ console.log(piecesCache); // TEMP
  */
 function placePieceAt(x, y, pieceType, rotation) {
     if (!(pieceType in piecesTemplate) || rotations.includes(rotation) == false){
+        // bad args
         return false;
     }
 
     const shape = piecesCache[pieceType][rotation];
     let width = shape.length, height = shape[0].length;
     if (x < 0 || x+width > boardWidth || y < 0 || y+height > boardHeight){
+        // out of bounds
         return false;
     }
 
-    // TODO: detect collision with other pieces
+    // collision with other pieces
+    for (let row = 0; row < height; row++) {
+        for (let col = 0; col < width; col++) {
+            if (shape[row][col] !== " ") {
+                const boardX = x + col;
+                const boardY = y + row;
+
+                let blocked = false;
+                for (full of fullSquares){
+                    if (full.x === boardX && full.y === boardY){
+                        return false;
+                    }
+                }
+            }
+        }
+    }
 
     return true;
 }
