@@ -3,6 +3,7 @@ import { boardWidth, boardHeight, stepTimeSec } from "./global.js";
 const boardEl = document.querySelector(".board");
 
 let stepTimer = 0.0;
+let lastTime = 0.0;
 const piecesTemplate = {
   O: [
     "00",
@@ -88,13 +89,13 @@ let fullSquares = []; // {x, y}
  * @returns {boolean} false if placement is not possible
  */
 function placePieceAt(x, y, pieceType, rotation) {
-    if (!(pieceType in types) || rotations.includes(rotation) == false){
+    if (!types.includes(pieceType) || !rotations.includes(rotation)) {
         // bad args
         return false;
     }
 
     const shape = piecesCache[pieceType][rotation];
-    let width = shape.length, height = shape[0].length;
+    let height = shape.length, width = shape[0].length;
     if (x < 0 || x+width > boardWidth || y < 0 || y+height > boardHeight){
         // out of bounds
         return false;
@@ -108,7 +109,7 @@ function placePieceAt(x, y, pieceType, rotation) {
                 const boardY = y + row;
 
                 let blocked = false;
-                for (full of fullSquares){
+                for (let full of fullSquares){
                     if (full.x === boardX && full.y === boardY){
                         return false;
                     }
@@ -135,18 +136,21 @@ function placePieceAt(x, y, pieceType, rotation) {
 }
 
 function spawnNextPiece(){
-    if (nextPieceType === null){ // true on first call
+    if (nextPieceType === undefined){ // true on first call
         nextPieceType = types[Math.floor(Math.random() * types.length)]
     }
 
     currPieceType = nextPieceType;
     currPieceRotation = 0;
-    currPieceX = boardWidth/2;
+    currPieceX = boardWidth/2 - 2; // middle of board
     currPieceY = 0;
 
     nextPieceType = types[Math.floor(Math.random() * types.length)]
 
     // TODO: send event to menus.js to draw next piece
+    
+    // render
+    placePieceAt(currPieceX, currPieceY, currPieceType, currPieceRotation);
 }
 
 function eraseCurrentPiece() {
@@ -169,22 +173,23 @@ function eraseCurrentPiece() {
 }
 
 // game loop
-window.requestAnimationFrame(update)
+requestAnimationFrame(update)
 
 function update(timestamp){
-    stepTimer += timestamp;
+    const delta = (timestamp - lastTime) / 1000;
+    lastTime = timestamp;
+    stepTimer += delta;
+
     if (stepTimer < stepTimeSec){
-        window.requestAnimationFrame(update);
+        requestAnimationFrame(update);
         return;
     }
     stepTimer = 0.0;
     
     // curr piece y+1
+    eraseCurrentPiece();
     let moved = placePieceAt(currPieceX, currPieceY+1, currPieceType, currPieceRotation);
-    if (moved == false){
-        // hit the floor
-        spawnNextPiece();
-
+    if (moved == false){ // hit the floor
         // add to fullSquares
         const shape = piecesCache[currPieceType][currPieceRotation];
         const height = shape.length;
@@ -200,12 +205,14 @@ function update(timestamp){
             }
         }
 
+        spawnNextPiece();
+        
         // TODO: code for winning and loosing
     } else {
-        eraseCurrentPiece();
+        currPieceY++;
     }
 
     // TODO: apply controls
 
-    window.requestAnimationFrame(update);
+    requestAnimationFrame(update);
 }
