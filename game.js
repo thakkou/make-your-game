@@ -1,4 +1,4 @@
-import { boardWidth, boardHeight, stepTimeSec } from "./global.js";
+import { boardWidth, boardHeight, stepTimeSec, scoreIncrement } from "./global.js";
 
 const boardEl = document.querySelector(".board");
 
@@ -6,24 +6,23 @@ let isPaused = false;
 let stepTimer = 0.0;
 let lastTime = 0.0;
 const piecesTemplate = {
-  O: [
-    "00",
-    "00"
-],
-  I: ["0000"],
-  T: [
-    "000",
-    " 0 "
-],
-  L: [
-    "00 ",
-    " 0 ",
-    " 0 "
-],
-  Z: [
-    "00 ",
-    " 00"
-],
+  O:[
+        "00",
+        "00"
+    ],
+  I:["0000"],
+  T:[
+        "000",
+        " 0 "
+    ],
+  L:[
+        "  0",
+        "000"
+    ],
+  Z:[
+        "00 ",
+        " 00"
+    ],
 };
 
 const rotations = [
@@ -97,17 +96,18 @@ function canPlacePieceAt(x, y, pieceType, rotation){
 
     const shape = piecesCache[pieceType][rotation];
     let height = shape.length, width = shape[0].length;
-    if (x < 0 || x+width > boardWidth || y < 0 || y+height > boardHeight){
-        // out of bounds
-        return false;
-    }
-
+    
     // collision with other pieces
     for (let row = 0; row < height; row++) {
         for (let col = 0; col < width; col++) {
             if (shape[row][col] !== " ") {
                 const boardX = x + col;
                 const boardY = y + row;
+
+                if (x < 0 || x+width > boardWidth || y < 0 || y+height > boardHeight){
+                    // out of bounds
+                    return false;
+                }
 
                 let blocked = false;
                 for (let full of fullSquares){
@@ -267,7 +267,16 @@ function update(timestamp){
 
         // check completed lines
         const completed = getCompletedLines();
-        // TODO...
+        const cells = boardEl.children;
+        for (let y of completed){
+            for (let x = 0; x < boardWidth; x++){
+                const index = y * boardWidth + x;
+                cells[index].classList.remove("active");
+                fullSquares.splice(fullSquares.findIndex(cell => cell.x === x && cell.y === y), 1);
+            }
+        }
+        window.dispatchEvent(new CustomEvent('game-score-increment', {detail: {score:scoreIncrement * completed.length}}));
+        // TODO: shift all lines above down
 
         spawnNextPiece();
     } else {

@@ -32,3 +32,8 @@ addEventListener("game-time-increment", (ev) => {
     const seconds = Math.floor((timer % 1) * 60);
     timerEl.textContent = `${minutes}:${seconds.toString().padStart(2, "0")}`;
 });
+
+addEventListener("game-score-increment", (ev) => {
+    score += ev.detail.score;
+    scoreEl.textContent = score;
+});
