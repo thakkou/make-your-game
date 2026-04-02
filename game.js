@@ -1,4 +1,4 @@
-import { boardWidth, boardHeight, stepTimeSec, scoreIncrement } from "./global.js";
+import { boardWidth, boardHeight, stepTimeSec, scoreIncrement, maxLives } from "./global.js";
 
 const boardEl = document.querySelector(".board");
 
@@ -26,7 +26,7 @@ const piecesTemplate = {
 };
 
 const rotations = [
-    0, 90, 180, 270,
+    0, 90, 180, 270
 ]
 const types = [
     "O", "I", "T", "L", "Z"
@@ -38,8 +38,12 @@ let nextPieceType;
 let piecesCache = {};
 let fullSquares = []; // {x, y}
 
+let livesLeft = maxLives;
+
 // setup
-(() => {
+(function setup() {
+    window.dispatchEvent(new CustomEvent('game-lives-decrement', {detail: {lives:livesLeft}}));
+
     // setup cells
     for (let i = 0; i < boardWidth * boardHeight; i++){
         boardEl.insertAdjacentHTML("beforeend", `<div class="cell"></div>`);
@@ -169,7 +173,15 @@ function spawnNextPiece(){
     
     // render
     if (canPlacePieceAt(currPieceX, currPieceY, currPieceType, currPieceRotation) == false){
-        // TODO: game lost, -1 life
+        livesLeft--;
+        window.dispatchEvent(new CustomEvent('game-lives-decrement', {detail: {lives:livesLeft}}));
+
+        if (livesLeft === 0){
+            // TODO: end game
+        } else {
+            // TODO: restart?
+        }
+
         console.log("GAME OVER");
     } else {
         placePieceAt(currPieceX, currPieceY, currPieceType, currPieceRotation);
@@ -223,32 +235,10 @@ function getCompletedLines(){
     return ret;
 }
 
-// game loop
-requestAnimationFrame(update);
-
 /**
- * game logic, runs every `stepTimeSec`
+ * move the current piece down by one step
  */
-function update(timestamp){
-    if (isPaused){
-        lastTime = timestamp;
-        requestAnimationFrame(update);
-        return;
-    }
-
-    const delta = (timestamp - lastTime) / 1000;
-    lastTime = timestamp;
-    stepTimer += delta;
-
-    window.dispatchEvent(new CustomEvent('game-time-increment', {detail: {delta:delta}}));
-
-    if (stepTimer < stepTimeSec){
-        requestAnimationFrame(update);
-        return;
-    }
-    stepTimer = 0.0;
-    
-    // curr piece y+1
+function fall(){
     if (canPlacePieceAt(currPieceX, currPieceY+1, currPieceType, currPieceRotation) == false){ // hit the floor
         // add to fullSquares
         const shape = piecesCache[currPieceType][currPieceRotation];
@@ -270,19 +260,67 @@ function update(timestamp){
         const cells = boardEl.children;
         for (let y of completed){
             for (let x = 0; x < boardWidth; x++){
+                // clear line
                 const index = y * boardWidth + x;
                 cells[index].classList.remove("active");
                 fullSquares.splice(fullSquares.findIndex(cell => cell.x === x && cell.y === y), 1);
             }
         }
+
+        // shift all lines above down
+        for (let cell of fullSquares) {
+            let shift = 0;
+            for (let clearedY of completed) {
+                if (cell.y < clearedY){
+                    shift++;
+                }
+            }
+
+            cell.y += shift;
+        }
+
+        // redraw board
+        for (let i = 0; i < cells.length; i++) {
+            cells[i].classList.remove("active");
+        }
+        for (let cell of fullSquares) {
+            const index = cell.y * boardWidth + cell.x;
+            cells[index].classList.add("active");
+        }
+
         window.dispatchEvent(new CustomEvent('game-score-increment', {detail: {score:scoreIncrement * completed.length}}));
-        // TODO: shift all lines above down
 
         spawnNextPiece();
     } else {
         eraseCurrentPiece();
         currPieceY++;
         placePieceAt(currPieceX, currPieceY, currPieceType, currPieceRotation);
+    }
+}
+
+// game loop
+requestAnimationFrame(update);
+
+/**
+ * game logic, runs every `stepTimeSec`
+ */
+function update(timestamp){
+    if (isPaused){
+        lastTime = timestamp;
+        requestAnimationFrame(update);
+        return;
+    }
+
+    const delta = (timestamp - lastTime) / 1000;
+    lastTime = timestamp;
+    stepTimer += delta;
+
+    window.dispatchEvent(new CustomEvent('game-time-increment', {detail: {delta:delta}}));
+
+    if (stepTimer >= stepTimeSec){
+        // move current piece +1Y
+        stepTimer = 0.0;
+        fall();
     }
 
     requestAnimationFrame(update);
@@ -303,6 +341,7 @@ addEventListener("keydown", (ev) => {
             break;
 
         case "ArrowDown":
+            fall();
             break;
 
         case "ArrowLeft":
