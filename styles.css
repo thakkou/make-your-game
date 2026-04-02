@@ -213,20 +213,6 @@ h1 {
     background: var(--c-J);
 }
 
-/* ── LEVEL BAR ────────────────────────────────── */
-.level-bar-track {
-    width: 100%;
-    height: 8px;
-    background: var(--border);
-    margin-top: 8px;
-}
-
-.level-bar-fill {
-    height: 100%;
-    background: var(--accent);
-    width: 60%;
-}
-
 /* ── CONTROLS ─────────────────────────────────── */
 .controls-list {
     display: flex;

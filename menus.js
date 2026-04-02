@@ -1,5 +1,4 @@
-const pauseEvent = new CustomEvent('event-pause');
-const unpauseEvent = new CustomEvent('event-unpause');
+const timerEl = document.querySelector(".panel-timer");
 
 let isPaused = false;
 let score = 0;
@@ -9,11 +8,20 @@ let timer = 0.0;
 
 let highestScore = 0; // TODO: we can store this in local storage
 
-
 addEventListener("keydown", (ev) => {
-    // TODO: doesn't do anything currently
     if (ev.key == "p"){
-        isPaused ? window.dispatchEvent(unpauseEvent) : window.dispatchEvent(pauseEvent);
         isPaused = !isPaused;
+        window.dispatchEvent(new CustomEvent('menu-pause', {detail:{isPaused:isPaused}}));
+
+        // TODO: UI to show that game is ppaused
     }
 })
+
+// events
+
+addEventListener("game-time-increment", (ev) => {
+    timer += ev.detail.delta;
+    const minutes = Math.floor(timer);
+    const seconds = Math.floor((timer % 1) * 60);
+    timerEl.textContent = `${minutes}:${seconds.toString().padStart(2, "0")}`;
+});

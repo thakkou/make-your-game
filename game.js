@@ -2,6 +2,7 @@ import { boardWidth, boardHeight, stepTimeSec } from "./global.js";
 
 const boardEl = document.querySelector(".board");
 
+let isPaused = false;
 let stepTimer = 0.0;
 let lastTime = 0.0;
 const piecesTemplate = {
@@ -135,9 +136,12 @@ function placePieceAt(x, y, pieceType, rotation) {
     return true;
 }
 
+/**
+ * spawns a random piece at the top
+ */
 function spawnNextPiece(){
     if (nextPieceType === undefined){ // true on first call
-        nextPieceType = types[Math.floor(Math.random() * types.length)]
+        nextPieceType = types[Math.floor(Math.random() * types.length)];
     }
 
     currPieceType = nextPieceType;
@@ -145,7 +149,7 @@ function spawnNextPiece(){
     currPieceX = boardWidth/2 - 2; // middle of board
     currPieceY = 0;
 
-    nextPieceType = types[Math.floor(Math.random() * types.length)]
+    nextPieceType = types[Math.floor(Math.random() * types.length)];
 
     // TODO: send event to menus.js to draw next piece
     
@@ -153,6 +157,9 @@ function spawnNextPiece(){
     placePieceAt(currPieceX, currPieceY, currPieceType, currPieceRotation);
 }
 
+/**
+ * "undo" render of current piece, used for animating a fall
+ */
 function eraseCurrentPiece() {
     const shape = piecesCache[currPieceType][currPieceRotation];
     const cells = boardEl.children;
@@ -175,10 +182,21 @@ function eraseCurrentPiece() {
 // game loop
 requestAnimationFrame(update)
 
+/**
+ * game logic, runs every `stepTimeSec`
+ */
 function update(timestamp){
+    if (isPaused){
+        lastTime = timestamp;
+        requestAnimationFrame(update);
+        return;
+    }
+
     const delta = (timestamp - lastTime) / 1000;
     lastTime = timestamp;
     stepTimer += delta;
+
+    window.dispatchEvent(new CustomEvent('game-time-increment', {detail: {delta:delta}}));
 
     if (stepTimer < stepTimeSec){
         requestAnimationFrame(update);
@@ -205,6 +223,9 @@ function update(timestamp){
             }
         }
 
+        // lock in position
+        placePieceAt(currPieceX, currPieceY, currPieceType, currPieceRotation);
+
         spawnNextPiece();
         
         // TODO: code for winning and loosing
@@ -216,3 +237,9 @@ function update(timestamp){
 
     requestAnimationFrame(update);
 }
+
+// events
+
+addEventListener("menu-pause", (ev) => {
+    isPaused = ev.detail.isPaused;
+});
