@@ -82,14 +82,14 @@ let fullSquares = []; // {x, y}
 
 
 /**
- * main function for positioning pieces
+ * check if piece can be placed at X,Y
  * @param {number} x - X position of the most top left block
  * @param {number} y - y position of the most top left block
  * @param {string} pieceType - type (O, I, L etc...)
  * @param {number} rotation - 90 degrees interval
  * @returns {boolean} false if placement is not possible
  */
-function placePieceAt(x, y, pieceType, rotation) {
+function canPlacePieceAt(x, y, pieceType, rotation){
     if (!types.includes(pieceType) || !rotations.includes(rotation)) {
         // bad args
         return false;
@@ -119,7 +119,20 @@ function placePieceAt(x, y, pieceType, rotation) {
         }
     }
 
+    return true;
+}
+
+/**
+ * main function for positioning pieces, make sure to call `canPlacePieceAt` first
+ * @param {number} x - X position of the most top left block
+ * @param {number} y - y position of the most top left block
+ * @param {string} pieceType - type (O, I, L etc...)
+ * @param {number} rotation - 90 degrees interval
+ */
+function placePieceAt(x, y, pieceType, rotation) {
     // render to dom
+    const shape = piecesCache[pieceType][rotation];
+    let height = shape.length, width = shape[0].length;
     const cells = boardEl.children;
     for (let row = 0; row < height; row++) {
         for (let col = 0; col < width; col++) {
@@ -132,29 +145,35 @@ function placePieceAt(x, y, pieceType, rotation) {
             }
         }
     }
-
-    return true;
 }
 
 /**
- * spawns a random piece at the top
+ * spawns a random piece at the top based on `nextPieceType`
  */
 function spawnNextPiece(){
     if (nextPieceType === undefined){ // true on first call
         nextPieceType = types[Math.floor(Math.random() * types.length)];
     }
-
+    
     currPieceType = nextPieceType;
     currPieceRotation = 0;
-    currPieceX = boardWidth/2 - 2; // middle of board
     currPieceY = 0;
+
+    const shapeWidth = piecesCache[currPieceType][currPieceRotation][0].length;
+    currPieceX = Math.round((boardWidth - shapeWidth) / 2); // middle of board
+    
 
     nextPieceType = types[Math.floor(Math.random() * types.length)];
 
-    // TODO: send event to menus.js to draw next piece
+    // TODO: send event to menus.js to draw next piece in UI
     
     // render
-    placePieceAt(currPieceX, currPieceY, currPieceType, currPieceRotation);
+    if (canPlacePieceAt(currPieceX, currPieceY, currPieceType, currPieceRotation) == false){
+        // TODO: game lost, -1 life
+        console.log("GAME OVER");
+    } else {
+        placePieceAt(currPieceX, currPieceY, currPieceType, currPieceRotation);
+    }
 }
 
 /**
@@ -179,8 +198,33 @@ function eraseCurrentPiece() {
     }
 }
 
+/**
+ * find all lines that are horizontaly completed (all cells full)
+ * @returns {Array} a list of indexes of Y lines that are complete
+ */
+function getCompletedLines(){
+    let ret = [];
+
+    const cells = boardEl.children;
+    for (let y = 0; y < boardHeight; y++) {
+        let completed = 0;
+        for (let x = 0; x < boardWidth; x++) {
+            const index = y * boardWidth + x;
+            if (cells[index].classList.contains("active")) {
+                completed++;
+            }
+        }
+
+        if (completed == boardWidth){
+            ret.push(y);
+        }
+    }
+
+    return ret;
+}
+
 // game loop
-requestAnimationFrame(update)
+requestAnimationFrame(update);
 
 /**
  * game logic, runs every `stepTimeSec`
@@ -205,9 +249,7 @@ function update(timestamp){
     stepTimer = 0.0;
     
     // curr piece y+1
-    eraseCurrentPiece();
-    let moved = placePieceAt(currPieceX, currPieceY+1, currPieceType, currPieceRotation);
-    if (moved == false){ // hit the floor
+    if (canPlacePieceAt(currPieceX, currPieceY+1, currPieceType, currPieceRotation) == false){ // hit the floor
         // add to fullSquares
         const shape = piecesCache[currPieceType][currPieceRotation];
         const height = shape.length;
@@ -223,22 +265,57 @@ function update(timestamp){
             }
         }
 
-        // lock in position
-        placePieceAt(currPieceX, currPieceY, currPieceType, currPieceRotation);
+        // check completed lines
+        const completed = getCompletedLines();
+        // TODO...
 
         spawnNextPiece();
-        
-        // TODO: code for winning and loosing
     } else {
+        eraseCurrentPiece();
         currPieceY++;
+        placePieceAt(currPieceX, currPieceY, currPieceType, currPieceRotation);
     }
-
-    // TODO: apply controls
 
     requestAnimationFrame(update);
 }
 
 // events
+
+addEventListener("keydown", (ev) => {
+    console.log(ev.key);
+    switch (ev.key){
+        case "ArrowUp":
+            const newRot = rotations[(rotations.indexOf(currPieceRotation) + 1) % rotations.length]; // next rotation
+            if (canPlacePieceAt(currPieceX, currPieceY, currPieceType, newRot)){
+                eraseCurrentPiece();
+                currPieceRotation = newRot;
+                placePieceAt(currPieceX, currPieceY, currPieceType, currPieceRotation);
+            }
+            break;
+
+        case "ArrowDown":
+            break;
+
+        case "ArrowLeft":
+            if (canPlacePieceAt(currPieceX-1, currPieceY, currPieceType, currPieceRotation)){
+                eraseCurrentPiece();
+                currPieceX -= 1;
+                placePieceAt(currPieceX, currPieceY, currPieceType, currPieceRotation);
+            }
+            break;
+
+        case "ArrowRight":
+            if (canPlacePieceAt(currPieceX+1, currPieceY, currPieceType, currPieceRotation)){
+                eraseCurrentPiece();
+                currPieceX += 1;
+                placePieceAt(currPieceX, currPieceY, currPieceType, currPieceRotation);
+            }
+            break;
+
+        case " ":
+            break;
+    }
+});
 
 addEventListener("menu-pause", (ev) => {
     isPaused = ev.detail.isPaused;
