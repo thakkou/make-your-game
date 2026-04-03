@@ -1,4 +1,4 @@
-import { boardWidth, boardHeight, stepTimeSec, scoreIncrement, maxLives, flushCellClass, isCellSolid } from "./global.js";
+import { boardWidth, boardHeight, stepTimeSec, scoreIncrement, maxLives, flushCellClass } from "./global.js";
 
 const boardEl = document.querySelector(".board");
 
@@ -35,7 +35,7 @@ const types = [
 let currPieceType, currPieceX, currPieceY, currPieceRotation;
 let nextPieceType;
 
-let piecesCache = {};
+let piecesCache = {}; // {type:{0:{...}, 90:{...}, 180:{...}, 270:{...}}}
 let fullCells = []; // {x, y, type}
 
 let livesLeft = maxLives;
@@ -51,14 +51,14 @@ let livesLeft = maxLives;
 
     // cache all possible rotations of all pieces so we don't recalculate it
     function rotate90(current) {
-        const rowLen = current.length;
-        const colLen = current[0].length;
+        const width = current.length;
+        const height = current[0].length;
 
         const result = [];
 
-        for (let c = 0; c < colLen; c++) {
+        for (let c = 0; c < height; c++) {
             const newRow = [];
-            for (let r = rowLen - 1; r >= 0; r--) {
+            for (let r = width - 1; r >= 0; r--) {
                 newRow.push(current[r][c]);
             }
             result.push(newRow);
@@ -66,8 +66,6 @@ let livesLeft = maxLives;
 
         return result;
     }
-
-    
     for (const [name, shape] of Object.entries(piecesTemplate)) {
         let current = shape.map((line) => line.split(""));
 
@@ -116,7 +114,6 @@ function canPlacePieceAt(x, y, pieceType, rotation){
                     return false;
                 }
 
-                let blocked = false;
                 for (let full of fullCells){
                     if (full.x === boardX && full.y === boardY){
                         return false;
@@ -167,8 +164,6 @@ function spawnNextPiece(){
     
     nextPieceType = types[Math.floor(Math.random() * types.length)];
     window.dispatchEvent(new CustomEvent('game-next-piece-chosen', {detail: {pieceType:nextPieceType, piece:piecesCache[nextPieceType][0]}}));
-
-    // TODO: send event to menus.js to draw next piece in UI
     
     // render
     if (canPlacePieceAt(currPieceX, currPieceY, currPieceType, currPieceRotation) == false){
@@ -216,11 +211,9 @@ function eraseCurrentPiece() {
 function getCompletedLines(){
     let ret = [];
 
-    const cells = boardEl.children;
     for (let y = 0; y < boardHeight; y++) {
         let completed = 0;
         for (let x = 0; x < boardWidth; x++) {
-            const index = y * boardWidth + x;
             if (fullCells.some(cell => cell.x === x && cell.y === y)) {
                 completed++;
             }
