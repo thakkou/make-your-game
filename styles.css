@@ -20,7 +20,7 @@
     --c-O: #ffeb3b;
     --c-I: #00bcd4;
     --c-T: #9c27b0;
-    --c-L: #ff9800;
+    --c-L: #002ed4;
     --c-Z: #f44336;
 
     --cell: 30px;
@@ -103,12 +103,12 @@ h1 {
 }
 
 /* Active (falling) piece highlight */
-.cell.active {
+.cell.active { /* NOT USED */
     filter: brightness(1.25);
 }
 
 /* Completed line flash */
-.cell.clear {
+.cell.clear { /* NOT USED */
     background: #fff;
     animation: flash 0.4s ease forwards;
 }
@@ -189,8 +189,12 @@ h1 {
     background: var(--c-O);
 }
 
-.next-cell.S {
-    background: var(--c-S);
+.next-cell.Z {
+    background: var(--c-Z);
+}
+
+.next-cell.L {
+    background: var(--c-L);
 }
 
 /* ── HOLD ─────────────────────────────────────── */

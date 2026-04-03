@@ -1,5 +1,6 @@
-import {maxLives} from "./global.js";
+import {maxLives, flushCellClass} from "./global.js";
 
+const nextPieceGridEl = document.querySelector(".next-grid");
 const scoreEl = document.querySelector(".panel-score");
 const livesEl = document.querySelector(".panel-lives");
 const timerEl = document.querySelector(".panel-timer");
@@ -31,6 +32,25 @@ addEventListener("game-time-increment", (ev) => {
 addEventListener("game-score-increment", (ev) => {
     score += ev.detail.score;
     scoreEl.textContent = score;
+});
+
+addEventListener("game-next-piece-chosen", (ev) => {
+    let cells = nextPieceGridEl.children;
+    
+    // clear
+    for (let cell of cells){
+        flushCellClass(cell);
+    }
+
+    let height = ev.detail.piece.length, width = ev.detail.piece[0].length;
+    for (let y = 0; y < height; y++){
+        for (let x = 0; x < width; x++){
+            if (ev.detail.piece[y][x] !== " "){
+                let index = x + y * 4;
+                cells[index].classList.add(ev.detail.pieceType);
+            }
+        }
+    }
 });
 
 addEventListener("game-lives-decrement", (ev) => {

@@ -1,11 +1,11 @@
-import { boardWidth, boardHeight, stepTimeSec, scoreIncrement, maxLives } from "./global.js";
+import { boardWidth, boardHeight, stepTimeSec, scoreIncrement, maxLives, flushCellClass, isCellSolid } from "./global.js";
 
 const boardEl = document.querySelector(".board");
 
 let isPaused = false;
 let stepTimer = 0.0;
 let lastTime = 0.0;
-const piecesTemplate = {
+const piecesTemplate = { // TODO: move these constants to global.js
   O:[
         "00",
         "00"
@@ -36,7 +36,7 @@ let currPieceType, currPieceX, currPieceY, currPieceRotation;
 let nextPieceType;
 
 let piecesCache = {};
-let fullSquares = []; // {x, y}
+let fullCells = []; // {x, y, type}
 
 let livesLeft = maxLives;
 
@@ -79,6 +79,9 @@ let livesLeft = maxLives;
     }
     console.log(piecesCache); // TEMP
 
+    // next piece
+    nextPieceType = types[Math.floor(Math.random() * types.length)];
+
     // start game
     spawnNextPiece();
 })();
@@ -114,7 +117,7 @@ function canPlacePieceAt(x, y, pieceType, rotation){
                 }
 
                 let blocked = false;
-                for (let full of fullSquares){
+                for (let full of fullCells){
                     if (full.x === boardX && full.y === boardY){
                         return false;
                     }
@@ -145,7 +148,7 @@ function placePieceAt(x, y, pieceType, rotation) {
                 const boardY = y + row;
 
                 const index = boardY * boardWidth + boardX;
-                cells[index].classList.add("active");
+                cells[index].classList.add(pieceType);
             }
         }
     }
@@ -155,10 +158,6 @@ function placePieceAt(x, y, pieceType, rotation) {
  * spawns a random piece at the top based on `nextPieceType`
  */
 function spawnNextPiece(){
-    if (nextPieceType === undefined){ // true on first call
-        nextPieceType = types[Math.floor(Math.random() * types.length)];
-    }
-    
     currPieceType = nextPieceType;
     currPieceRotation = 0;
     currPieceY = 0;
@@ -166,8 +165,8 @@ function spawnNextPiece(){
     const shapeWidth = piecesCache[currPieceType][currPieceRotation][0].length;
     currPieceX = Math.round((boardWidth - shapeWidth) / 2); // middle of board
     
-
     nextPieceType = types[Math.floor(Math.random() * types.length)];
+    window.dispatchEvent(new CustomEvent('game-next-piece-chosen', {detail: {pieceType:nextPieceType, piece:piecesCache[nextPieceType][0]}}));
 
     // TODO: send event to menus.js to draw next piece in UI
     
@@ -204,7 +203,7 @@ function eraseCurrentPiece() {
                 const boardY = currPieceY + row;
                 const index = boardY * boardWidth + boardX;
 
-                cells[index].classList.remove("active");
+                flushCellClass(cells[index]);
             }
         }
     }
@@ -222,7 +221,7 @@ function getCompletedLines(){
         let completed = 0;
         for (let x = 0; x < boardWidth; x++) {
             const index = y * boardWidth + x;
-            if (cells[index].classList.contains("active")) {
+            if (fullCells.some(cell => cell.x === x && cell.y === y)) {
                 completed++;
             }
         }
@@ -232,6 +231,7 @@ function getCompletedLines(){
         }
     }
 
+    console.log("Completed Lines: ", ret);
     return ret;
 }
 
@@ -240,7 +240,7 @@ function getCompletedLines(){
  */
 function fall(){
     if (canPlacePieceAt(currPieceX, currPieceY+1, currPieceType, currPieceRotation) == false){ // hit the floor
-        // add to fullSquares
+        // add to fullCells
         const shape = piecesCache[currPieceType][currPieceRotation];
         const height = shape.length;
         const width = shape[0].length;
@@ -250,7 +250,7 @@ function fall(){
                     const boardX = currPieceX + col;
                     const boardY = currPieceY + row;
 
-                    fullSquares.push({ x: boardX, y: boardY });
+                    fullCells.push({ x: boardX, y: boardY, type:currPieceType });
                 }
             }
         }
@@ -262,13 +262,13 @@ function fall(){
             for (let x = 0; x < boardWidth; x++){
                 // clear line
                 const index = y * boardWidth + x;
-                cells[index].classList.remove("active");
-                fullSquares.splice(fullSquares.findIndex(cell => cell.x === x && cell.y === y), 1);
+                flushCellClass(cells[index]);
+                fullCells.splice(fullCells.findIndex(cell => cell.x === x && cell.y === y), 1);
             }
         }
 
         // shift all lines above down
-        for (let cell of fullSquares) {
+        for (let cell of fullCells) {
             let shift = 0;
             for (let clearedY of completed) {
                 if (cell.y < clearedY){
@@ -281,11 +281,11 @@ function fall(){
 
         // redraw board
         for (let i = 0; i < cells.length; i++) {
-            cells[i].classList.remove("active");
+            flushCellClass(cells[i]);
         }
-        for (let cell of fullSquares) {
+        for (let cell of fullCells) {
             const index = cell.y * boardWidth + cell.x;
-            cells[index].classList.add("active");
+            cells[index].classList.add(cell.type);
         }
 
         window.dispatchEvent(new CustomEvent('game-score-increment', {detail: {score:scoreIncrement * completed.length}}));
