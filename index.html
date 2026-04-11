@@ -3,18 +3,25 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- <link rel="icon" type="image/x-icon" href="/favicon.ico"> -->
 <title>TETRIS</title>
 <link rel="stylesheet" href="styles.css">
+
+<script type="module" src="global.js"></script>
+<script type="module" src="menus.js"></script>
+<script type="module" src="functions.js"></script>
+<script type="module" src="main.js"></script>
 </head>
 <body>
 
-<h1>Tetris</h1>
+
 
 <div class="game-wrapper">
 
   <!-- LEFT PANEL -->
   <div class="side">
 
+    <h1>Tetris</h1>
     <div class="panel">
       <div class="panel-label">Score</div>
       <div class="panel-score panel-value">000</div>
@@ -90,12 +97,12 @@
       <div class="panel-value" style="font-size:1.1rem;">218 400</div>
     </div>
 
+    <div class="panel">
+      <button id="start-btn">Start</button>
+    </div>
+
   </div>
 
 </div><!-- /game-wrapper -->
-
-<script type="module" src="global.js"></script>
-<script type="module" src="menus.js"></script>
-<script type="module" src="game.js"></script>
 </body>
 </html>

@@ -1,36 +1,8 @@
-import { boardWidth, boardHeight, stepTimeSec, scoreIncrement, maxLives, flushCellClass } from "./global.js";
-
-const boardEl = document.querySelector(".board");
+import { boardWidth, boardHeight, stepTimeSec, scoreIncrement, maxLives, flushCellClass, boardEl, piecesTemplate, rotations, types } from "./global.js";
 
 let isPaused = false;
 let stepTimer = 0.0;
 let lastTime = 0.0;
-const piecesTemplate = { // TODO: move these constants to global.js
-  O:[
-        "00",
-        "00"
-    ],
-  I:["0000"],
-  T:[
-        "000",
-        " 0 "
-    ],
-  L:[
-        "  0",
-        "000"
-    ],
-  Z:[
-        "00 ",
-        " 00"
-    ],
-};
-
-const rotations = [
-    0, 90, 180, 270
-]
-const types = [
-    "O", "I", "T", "L", "Z"
-]
 
 let currPieceType, currPieceX, currPieceY, currPieceRotation;
 let nextPieceType;
@@ -41,7 +13,7 @@ let fullCells = []; // {x, y, type}
 let livesLeft = maxLives;
 
 // setup
-(function setup() {
+export function setup() {
     window.dispatchEvent(new CustomEvent('game-lives-decrement', {detail: {lives:livesLeft}}));
 
     // setup cells
@@ -82,7 +54,7 @@ let livesLeft = maxLives;
 
     // start game
     spawnNextPiece();
-})();
+}
 
 
 /**
@@ -291,13 +263,12 @@ function fall(){
     }
 }
 
-// game loop
-requestAnimationFrame(update);
+
 
 /**
  * game logic, runs every `stepTimeSec`
  */
-function update(timestamp){
+export function update(timestamp){
     if (isPaused){
         lastTime = timestamp;
         requestAnimationFrame(update);

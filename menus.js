@@ -1,9 +1,4 @@
-import {maxLives, flushCellClass} from "./global.js";
-
-const nextPieceGridEl = document.querySelector(".next-grid");
-const scoreEl = document.querySelector(".panel-score");
-const livesEl = document.querySelector(".panel-lives");
-const timerEl = document.querySelector(".panel-timer");
+import {maxLives, flushCellClass, nextPieceGridEl, scoreEl, livesEl, timerEl} from "./global.js";
 
 let isPaused = false;
 let score = 0;
