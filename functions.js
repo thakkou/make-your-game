@@ -144,6 +144,8 @@ function spawnNextPiece(){
 
         if (livesLeft === 0){
             // TODO: end game
+            document.getElementsById('status-banner').style.display = "block";
+            return
         } else {
             // TODO: restart?
         }
