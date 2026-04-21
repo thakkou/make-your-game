@@ -1,5 +1,7 @@
 import {maxLives, flushCellClass, nextPieceGridEl, scoreEl, livesEl, timerEl} from "./global.js";
 
+// rename file to panels.js ?!
+
 let isPaused = false;
 let score = 0;
 let timer = 0.0;
@@ -37,7 +39,8 @@ addEventListener("game-next-piece-chosen", (ev) => {
         flushCellClass(cell);
     }
 
-    let height = ev.detail.piece.length, width = ev.detail.piece[0].length;
+    let height = ev.detail.piece.length
+    let width = ev.detail.piece[0].length;
     for (let y = 0; y < height; y++){
         for (let x = 0; x < width; x++){
             if (ev.detail.piece[y][x] !== " "){

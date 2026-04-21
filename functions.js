@@ -22,22 +22,6 @@ export function setup() {
     }
 
     // cache all possible rotations of all pieces so we don't recalculate it
-    function rotate90(current) {
-        const width = current.length;
-        const height = current[0].length;
-
-        const result = [];
-
-        for (let c = 0; c < height; c++) {
-            const newRow = [];
-            for (let r = width - 1; r >= 0; r--) {
-                newRow.push(current[r][c]);
-            }
-            result.push(newRow);
-        }
-
-        return result;
-    }
     for (const [name, shape] of Object.entries(piecesTemplate)) {
         let current = shape.map((line) => line.split(""));
 
@@ -54,6 +38,23 @@ export function setup() {
 
     // start game
     spawnNextPiece();
+}
+
+function rotate90(current) {
+    const width = current.length;
+    const height = current[0].length;
+
+    const result = [];
+
+    for (let c = 0; c < height; c++) {
+        const newRow = [];
+        for (let r = width - 1; r >= 0; r--) {
+            newRow.push(current[r][c]);
+        }
+        result.push(newRow);
+    }
+
+    return result;
 }
 
 
@@ -188,7 +189,7 @@ function getCompletedLines(){
     for (let y = 0; y < boardHeight; y++) {
         let completed = 0;
         for (let x = 0; x < boardWidth; x++) {
-            if (fullCells.some(cell => cell.x === x && cell.y === y)) {
+            if (fullCells.some(cell => cell.x === x && cell.y === y)) { // just check if not instead
                 completed++;
             }
         }

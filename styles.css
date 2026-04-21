@@ -17,11 +17,13 @@
     --accent: #f0f0f0;
 
     /* piece colours */
-    --c-O: #ffeb3b;
-    --c-I: #00bcd4;
-    --c-T: #9c27b0;
-    --c-L: #002ed4;
-    --c-Z: #f44336;
+    --c-I: lightblue; /* previous: #00bcd4 */
+    --c-O: yellow;    /* previous: #ffeb3b */
+    --c-T: purple;    /* previous: #9c27b0 */
+    --c-S: green;
+    --c-Z: red;       /* previous: #f44336 */
+    --c-J: blue;
+    --c-L: orange;    /* previous: #002ed4 */
 
     --cell: 30px;
     --gap: 1px;
@@ -82,23 +84,31 @@ h1 {
 }
 
 /* Filled cells */
-.cell.I {
+.cell.I, .next-cell.I {
     background: var(--c-I);
 }
 
-.cell.O {
+.cell.O, .next-cell.O {
     background: var(--c-O);
 }
 
-.cell.T {
+.cell.T, .next-cell.T {
     background: var(--c-T);
 }
 
-.cell.Z {
+.cell.S, .next-cell.S {
+    background: var(--c-S);
+}
+
+.cell.Z, .next-cell.Z {
     background: var(--c-Z);
 }
 
-.cell.L {
+.cell.J, .next-cell.J {
+    background: var(--c-J);
+}
+
+.cell.L, .next-cell.L {
     background: var(--c-L);
 }
 
@@ -175,26 +185,6 @@ h1 {
     width: 22px;
     height: 22px;
     background: #111;
-}
-
-.next-cell.T {
-    background: var(--c-T);
-}
-
-.next-cell.I {
-    background: var(--c-I);
-}
-
-.next-cell.O {
-    background: var(--c-O);
-}
-
-.next-cell.Z {
-    background: var(--c-Z);
-}
-
-.next-cell.L {
-    background: var(--c-L);
 }
 
 /* ── HOLD ─────────────────────────────────────── */
