@@ -50,27 +50,17 @@ The game relies on CSS grid for layout and `RequestAnimationFrame` for logic.
     - Performance Tool -> can record a sample of actions on the site and analyze the FPS, check for frame drops, how much time your functions take to execute, and other useful metrics monitoring.
     - Paint Flashing option -> highlights every paint that happens in your page as actions are performed on it.
 
+--
+
+* Enable/Disable JS in firefox:
+    1. In the address bar, type: "about:config"
+    2. Click “Accept the Risk and Continue”
+    3. In the search bar, type: "javascript.enabled"
+    4. Click the setting's toggle button
+
 ---
 
 ## Authors
 
 - thakkou - [Github](https://github/thakkou)
 - halhyane - [Github](https://github/DissonantVoid)
-
----
-
-## TODO
-
-* mandatory:
-    1. add missing piece types
-    2. timer start calculating before 'start'
-    3. controls (and everything) shouldn't be working before 'start'
-    4. noscript tag
-    5. game over not working
-
-* optional:
-    1. favicon.ico
-    2. improve side style
-    3. how a variable in js declared with let and exported is readonly
-    4. event loop ?!
-    5. tasks (Painting, Compositing... ?!)

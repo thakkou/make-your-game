@@ -13,96 +13,104 @@
 <script type="module" src="main.js"></script>
 </head>
 <body>
-
-
-
-<div class="game-wrapper">
-
-  <!-- LEFT PANEL -->
-  <div class="side">
-
-    <h1>Tetris</h1>
-    <div class="panel">
-      <div class="panel-label">Score</div>
-      <div class="panel-score panel-value">000</div>
+  <noscript>
+    <!-- fallback UI -->
+    <!-- noscript in <head> element for advanced use. -->
+    <style>
+      .game-wrapper { display: none; }
+    </style>
+    <div style="color: red; padding: 10px;">
+      This site requires JavaScript to function properly. Please enable it.
     </div>
+  </noscript>
 
-    <div class="panel">
-      <div class="panel-label">Lives</div>
-      <div class="panel-lives panel-value">0/0</div>
-    </div>
+  <div class="game-wrapper">
 
-    <div class="panel">
-      <div class="panel-label">Time</div>
-      <div class="panel-timer panel-value">00:00</div>
-    </div>
-  </div>
+    <!-- LEFT PANEL -->
+    <div class="side">
 
-  <!-- BOARD -->
-  <div class="board-container">
-    <div class="board">
-      <!-- board is setup in js -->
-    </div>
+      <h1>Tetris</h1>
+      <div class="panel">
+        <div class="panel-label">Score</div>
+        <div class="panel-score panel-value">000</div>
+      </div>
 
-    <!-- GAME OVER OVERLAY — set display:block to show -->
-    <div id="status-banner" style="display: none;">
-      <div class="status-title">Game Over</div>
-      <div class="status-sub">Press R to restart</div>
-    </div>
+      <div class="panel">
+        <div class="panel-label">Lives</div>
+        <div class="panel-lives panel-value">0/0</div>
+      </div>
 
-  </div><!-- /board-container -->
-
-  <!-- RIGHT PANEL -->
-  <div class="side">
-
-    <div class="panel">
-      <div class="panel-label">Next Piece</div>
-      <div class="next-grid">
-        <!-- piece preview -->
-        <div class="next-cell"></div>
-        <div class="next-cell"></div>
-        <div class="next-cell"></div>
-        <div class="next-cell"></div>
-
-        <div class="next-cell"></div>
-        <div class="next-cell"></div>
-        <div class="next-cell"></div>
-        <div class="next-cell"></div>
-
-        <div class="next-cell"></div>
-        <div class="next-cell"></div>
-        <div class="next-cell"></div>
-        <div class="next-cell"></div>
-
-        <div class="next-cell"></div>
-        <div class="next-cell"></div>
-        <div class="next-cell"></div>
-        <div class="next-cell"></div>
+      <div class="panel">
+        <div class="panel-label">Time</div>
+        <div class="panel-timer panel-value">00:00</div>
       </div>
     </div>
 
-    <div class="panel">
-      <div class="panel-label">Controls</div>
-      <div class="controls-list">
-        <div class="ctrl-row"><span>Move</span>     <span><span class="key">← →</span></span></div>
-        <div class="ctrl-row"><span>Rotate</span>   <span><span class="key">↑</span></span></div>
-        <div class="ctrl-row"><span>Soft drop</span><span><span class="key">↓</span></span></div>
-        <div class="ctrl-row"><span>Hard drop</span><span><span class="key">SPC</span></span></div>
-        <div class="ctrl-row"><span>Pause</span>    <span><span class="key">P</span></span></div>
+    <!-- BOARD -->
+    <div class="board-container">
+      <div class="board">
+        <!-- board is setup in js -->
       </div>
+
+      <!-- GAME OVER OVERLAY — set display:block to show -->
+      <div id="status-banner" style="display: none;">
+        <div class="status-title">Game Over</div>
+        <div class="status-sub">Press R to restart</div>
+      </div>
+
+    </div><!-- /board-container -->
+
+    <!-- RIGHT PANEL -->
+    <div class="side">
+
+      <div class="panel">
+        <div class="panel-label">Next Piece</div>
+        <div class="next-grid">
+          <!-- piece preview -->
+          <div class="next-cell"></div>
+          <div class="next-cell"></div>
+          <div class="next-cell"></div>
+          <div class="next-cell"></div>
+
+          <div class="next-cell"></div>
+          <div class="next-cell"></div>
+          <div class="next-cell"></div>
+          <div class="next-cell"></div>
+
+          <div class="next-cell"></div>
+          <div class="next-cell"></div>
+          <div class="next-cell"></div>
+          <div class="next-cell"></div>
+
+          <div class="next-cell"></div>
+          <div class="next-cell"></div>
+          <div class="next-cell"></div>
+          <div class="next-cell"></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-label">Controls</div>
+        <div class="controls-list">
+          <div class="ctrl-row"><span>Move</span>     <span><span class="key">← →</span></span></div>
+          <div class="ctrl-row"><span>Rotate</span>   <span><span class="key">↑</span></span></div>
+          <div class="ctrl-row"><span>Soft drop</span><span><span class="key">↓</span></span></div>
+          <div class="ctrl-row"><span>Hard drop</span><span><span class="key">SPC</span></span></div>
+          <div class="ctrl-row"><span>Pause</span>    <span><span class="key">P</span></span></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-label">High Score</div>
+        <div class="panel-value" style="font-size:1.1rem;">218 400</div>
+      </div>
+
+      <div class="panel">
+        <button id="start-btn">Start</button>
+      </div>
+
     </div>
 
-    <div class="panel">
-      <div class="panel-label">High Score</div>
-      <div class="panel-value" style="font-size:1.1rem;">218 400</div>
-    </div>
-
-    <div class="panel">
-      <button id="start-btn">Start</button>
-    </div>
-
-  </div>
-
-</div><!-- /game-wrapper -->
+  </div><!-- /game-wrapper -->
 </body>
 </html>
