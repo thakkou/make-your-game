@@ -13,7 +13,7 @@ Tetris (from pre-approved list)
 The game relies on CSS grid for layout and `RequestAnimationFrame` for logic.
 - `global.js` global variables shared between scripts
 - `game.js` game logic (fall, controls, win/lose...)
-- `menus.js` menu logic (score, timer, lives...)
+- `panels.js` menu logic (score, timer, lives...)
 
 ---
 
@@ -63,4 +63,4 @@ The game relies on CSS grid for layout and `RequestAnimationFrame` for logic.
 ## Authors
 
 - thakkou - [Github](https://github/thakkou)
-- halhyane - [Github](https://github/DissonantVoid)
+- mbelhouss - [Github](https://github/DissonantVoid)

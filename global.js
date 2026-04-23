@@ -11,8 +11,13 @@ export const nextPieceGridEl = document.querySelector(".next-grid");
 export const scoreEl = document.querySelector(".panel-score");
 export const livesEl = document.querySelector(".panel-lives");
 export const timerEl = document.querySelector(".panel-timer");
+const statusEl = document.querySelector("#status-banner")
+const statusTitleEl = statusEl.querySelector(".status-title")
+const statusContentEl = statusEl.querySelector(".status-sub")
 
 //
+
+let statusState = "ready"
 
 export const piecesTemplate = {
     I: ["0000"],
@@ -53,4 +58,32 @@ export const types = [
 
 export function flushCellClass(cell){
     cell.classList.remove("I", "O", "T", "S", "Z", "J", "L");
+}
+
+export function getStatusState(){
+    return statusState
+}
+
+export function setStatusState(state){
+    statusState = state;
+
+    if (state == "hidden"){
+        statusEl.classList.add("status-banner-hidden");
+    } else {
+        statusEl.classList.remove("status-banner-hidden");
+    }
+
+    if (state == "ready"){
+        statusTitleEl.textContent = "Ready?";
+        statusContentEl.textContent = "Press Enter to start";
+    }
+    else if (state == "pause"){
+        statusTitleEl.textContent = "Paused";
+        statusContentEl.textContent = "Press P to continue";
+    }
+    else if (state == "over"){
+        statusTitleEl.textContent = "Game Over";
+        statusContentEl.textContent = "Press Enter to restart";
+    }
+    
 }

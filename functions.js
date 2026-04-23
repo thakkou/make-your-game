@@ -1,6 +1,6 @@
-import { boardWidth, boardHeight, stepTimeSec, scoreIncrement, maxLives, flushCellClass, boardEl, piecesTemplate, rotations, types } from "./global.js";
+import { boardWidth, boardHeight, stepTimeSec, scoreIncrement, maxLives, flushCellClass, boardEl, piecesTemplate, rotations, types, setStatusState, getStatusState } from "./global.js";
 
-let isPaused = false;
+let isPaused = true;
 let stepTimer = 0.0;
 let lastTime = 0.0;
 
@@ -145,7 +145,7 @@ function spawnNextPiece(){
 
         if (livesLeft === 0){
             // TODO: end game
-            document.getElementsById('status-banner').style.display = "block";
+            setStatusState("over");
             return
         } else {
             // TODO: restart?
@@ -296,8 +296,29 @@ export function update(timestamp){
 // events
 
 addEventListener("keydown", (ev) => {
-    console.log(ev.key);
+    if (isPaused){
+        switch (ev.key){
+            case "Enter":
+                console.log(getStatusState()=== "over")
+                if (getStatusState() === "ready"){
+                    isPaused = false;
+                    setStatusState("hidden");
+                }
+                break;
+        }
+        return
+    }
+
     switch (ev.key){
+        case "Enter":
+            if (getStatusState() === "over"){
+                // TODO: reset everything
+                location.reload(); // or just refresh page ¯\_(ツ)_/¯
+                isPaused = false;
+                setStatusState("hidden");
+            }
+            break;
+
         case "ArrowUp":
             const newRot = rotations[(rotations.indexOf(currPieceRotation) + 1) % rotations.length]; // next rotation
             if (canPlacePieceAt(currPieceX, currPieceY, currPieceType, newRot)){
@@ -334,4 +355,9 @@ addEventListener("keydown", (ev) => {
 
 addEventListener("menu-pause", (ev) => {
     isPaused = ev.detail.isPaused;
+    if (isPaused){
+        setStatusState("pause");
+    } else if (getStatusState() == "pause") {
+        setStatusState("hidden");
+    }
 });

@@ -1,9 +1,8 @@
 import { setup, update } from "./functions.js";
-
+import {setStatusState} from "./global.js"
 
 setup(); // script already deffered in html
-document.getElementById('start-btn').addEventListener("click", () => {
-    // game loop
-    requestAnimationFrame(update);
-});
 
+// game loop
+setStatusState("ready");
+requestAnimationFrame(update);

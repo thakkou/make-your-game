@@ -1,7 +1,5 @@
 import {maxLives, flushCellClass, nextPieceGridEl, scoreEl, livesEl, timerEl} from "./global.js";
 
-// rename file to panels.js ?!
-
 let isPaused = false;
 let score = 0;
 let timer = 0.0;

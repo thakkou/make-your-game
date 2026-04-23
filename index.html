@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="styles.css">
 
 <script type="module" src="global.js"></script>
-<script type="module" src="menus.js"></script>
+<script type="module" src="panels.js"></script>
 <script type="module" src="functions.js"></script>
 <script type="module" src="main.js"></script>
 </head>
@@ -53,9 +53,9 @@
       </div>
 
       <!-- GAME OVER OVERLAY — set display:block to show -->
-      <div id="status-banner" style="display: none;">
-        <div class="status-title">Game Over</div>
-        <div class="status-sub">Press R to restart</div>
+      <div id="status-banner">
+        <div class="status-title">Title</div>
+        <div class="status-sub">Content</div>
       </div>
 
     </div><!-- /board-container -->
@@ -103,10 +103,6 @@
       <div class="panel">
         <div class="panel-label">High Score</div>
         <div class="panel-value" style="font-size:1.1rem;">218 400</div>
-      </div>
-
-      <div class="panel">
-        <button id="start-btn">Start</button>
       </div>
 
     </div>

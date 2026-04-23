@@ -47,7 +47,6 @@ h1 {
     font-size: 2.6rem;
     font-weight: 900;
     text-transform: uppercase;
-    letter-spacing: 0.35em;
     margin-bottom: 24px;
     color: var(--accent);
     border-bottom: 3px solid var(--accent);
@@ -234,7 +233,7 @@ h1 {
 }
 
 /* ── STATUS OVERLAY ───────────────────────────── */
-.status-banner {
+#status-banner {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -244,8 +243,12 @@ h1 {
     padding: 20px 32px;
     text-align: center;
     pointer-events: none;
-    display: none;
-    /* toggle to 'block' to show */
+
+    display: block;
+}
+
+.status-banner-hidden{
+    display: none !important;
 }
 
 .status-title {
