@@ -1,9 +1,9 @@
-import {maxLives, flushCellClass, nextPieceGridEl, scoreEl, livesEl, timerEl} from "./global.js";
+import {maxLives, flushCellClass, nextPieceGridEl, scoreEl, highScoreEl, livesEl, timerEl} from "./global.js";
 
 let score = 0;
 let timer = 0.0;
 
-let highestScore = 0; // TODO: we can store this in local storage
+highScoreEl.textContent = localStorage.getItem("highScore") ?? 0;
 
 // events
 
@@ -47,4 +47,9 @@ addEventListener("game-next-piece-chosen", (ev) => {
 
 addEventListener("game-lives-decrement", (ev) => {
     livesEl.textContent = `${ev.detail.lives}/${maxLives}`;
+});
+
+addEventListener("game-over", (ev) => {
+    highScoreEl.textContent = score;
+    localStorage.setItem("highScore", score);
 });

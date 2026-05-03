@@ -1,4 +1,4 @@
-import { boardWidth, boardHeight, stepTimeSec, scoreIncrement, maxLives, flushCellClass, boardEl, piecesTemplate, rotations, types, setGameState, getGameState } from "./global.js";
+import { boardWidth, boardHeight, stepTimeSec, scoreIncrement, maxLives, isCellEmpty, flushCellClass, boardEl, piecesTemplate, rotations, types, setGameState, getGameState } from "./global.js";
 
 let isPaused = true;
 let stepTimer = 0.0;
@@ -144,11 +144,15 @@ function spawnNextPiece(){
         window.dispatchEvent(new CustomEvent('game-lives-decrement', {detail: {lives:livesLeft}}));
 
         if (livesLeft === 0){
-            // TODO: end game
+            // game over, no more lives
             setGameState("prompt-over");
-            return
+            window.dispatchEvent(new CustomEvent('game-over'));
+            return;
         } else {
-            // TODO: restart?
+            // try again
+            fullCells = [];
+            setGameState("clear-all");
+            return;
         }
     } else {
         placePieceAt(currPieceX, currPieceY, currPieceType, currPieceRotation);
@@ -292,6 +296,27 @@ export function update(timestamp){
         }
     }
 
+    else if (gameState === "clear-all"){
+        const cells = boardEl.children;
+        let erased = false;
+        
+        outerLoop: for (let row = 0; row < boardHeight; row++) {
+            for (let col = 0; col < boardWidth; col++) {
+                const index = row * boardWidth + col;
+
+                if (isCellEmpty(cells[index]) === false){
+                    flushCellClass(cells[index]);
+                    erased = true;
+                    break outerLoop;
+                }
+            }
+        }
+        if (erased === false){
+            // all erased, back to game
+            setGameState("game");
+        }
+    }
+
 
     requestAnimationFrame(update);
 }
@@ -322,35 +347,46 @@ addEventListener("keydown", (ev) => {
             break;
 
         case "ArrowUp":
-            const newRot = rotations[(rotations.indexOf(currPieceRotation) + 1) % rotations.length]; // next rotation
-            if (canPlacePieceAt(currPieceX, currPieceY, currPieceType, newRot)){
-                eraseCurrentPiece();
-                currPieceRotation = newRot;
-                placePieceAt(currPieceX, currPieceY, currPieceType, currPieceRotation);
+            if (getGameState() === "game"){
+                const newRot = rotations[(rotations.indexOf(currPieceRotation) + 1) % rotations.length]; // next rotation
+                if (canPlacePieceAt(currPieceX, currPieceY, currPieceType, newRot)){
+                    eraseCurrentPiece();
+                    currPieceRotation = newRot;
+                    placePieceAt(currPieceX, currPieceY, currPieceType, currPieceRotation);
+                }
             }
             break;
 
         case "ArrowDown":
-            fall();
+            if (getGameState() === "game"){
+                fall();
+            }
             break;
 
         case "ArrowLeft":
-            if (canPlacePieceAt(currPieceX-1, currPieceY, currPieceType, currPieceRotation)){
-                eraseCurrentPiece();
-                currPieceX -= 1;
-                placePieceAt(currPieceX, currPieceY, currPieceType, currPieceRotation);
+            if (getGameState() === "game"){
+                if (canPlacePieceAt(currPieceX-1, currPieceY, currPieceType, currPieceRotation)){
+                    eraseCurrentPiece();
+                    currPieceX -= 1;
+                    placePieceAt(currPieceX, currPieceY, currPieceType, currPieceRotation);
+                }
             }
             break;
 
         case "ArrowRight":
-            if (canPlacePieceAt(currPieceX+1, currPieceY, currPieceType, currPieceRotation)){
-                eraseCurrentPiece();
-                currPieceX += 1;
-                placePieceAt(currPieceX, currPieceY, currPieceType, currPieceRotation);
+            if (getGameState() === "game"){
+                if (canPlacePieceAt(currPieceX+1, currPieceY, currPieceType, currPieceRotation)){
+                    eraseCurrentPiece();
+                    currPieceX += 1;
+                    placePieceAt(currPieceX, currPieceY, currPieceType, currPieceRotation);
+                }
             }
             break;
 
         case " ":
+            if (getGameState() === "game"){
+                // TODO: drop down, or remove feature
+            }
             break;
     }
 });

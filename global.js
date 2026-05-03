@@ -9,6 +9,7 @@ export const maxLives = 4;
 export const boardEl = document.querySelector(".board");
 export const nextPieceGridEl = document.querySelector(".next-grid");
 export const scoreEl = document.querySelector(".panel-score");
+export const highScoreEl = document.querySelector(".panel-highscore");
 export const livesEl = document.querySelector(".panel-lives");
 export const timerEl = document.querySelector(".panel-timer");
 const statusEl = document.querySelector("#status-banner")
@@ -56,8 +57,17 @@ export const types = [
 
 // Functions
 
+export function isCellEmpty(cell){
+    for (let t of types){
+        if (cell.classList.contains(t)){
+            return false;
+        }
+    }
+    return true;
+}
+
 export function flushCellClass(cell){
-    cell.classList.remove("I", "O", "T", "S", "Z", "J", "L");
+    cell.classList.remove(...types);
 }
 
 export function getGameState(){
@@ -86,5 +96,4 @@ export function setGameState(state){
         statusTitleEl.textContent = "Game Over";
         statusContentEl.textContent = "Press Enter to restart";
     }
-    
 }
