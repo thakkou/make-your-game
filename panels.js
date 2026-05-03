@@ -1,6 +1,5 @@
 import {maxLives, flushCellClass, nextPieceGridEl, scoreEl, livesEl, timerEl} from "./global.js";
 
-let isPaused = false;
 let score = 0;
 let timer = 0.0;
 
@@ -10,10 +9,7 @@ let highestScore = 0; // TODO: we can store this in local storage
 
 addEventListener("keydown", (ev) => {
     if (ev.key == "p"){
-        isPaused = !isPaused;
-        window.dispatchEvent(new CustomEvent('menu-pause', {detail:{isPaused:isPaused}}));
-
-        // TODO: UI to show that game is ppaused
+        window.dispatchEvent(new CustomEvent('toggle-pause'));
     }
 });
 

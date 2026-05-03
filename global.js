@@ -17,7 +17,7 @@ const statusContentEl = statusEl.querySelector(".status-sub")
 
 //
 
-let statusState = "ready"
+let gameState = "ready"
 
 export const piecesTemplate = {
     I: ["0000"],
@@ -60,28 +60,29 @@ export function flushCellClass(cell){
     cell.classList.remove("I", "O", "T", "S", "Z", "J", "L");
 }
 
-export function getStatusState(){
-    return statusState
+export function getGameState(){
+    return gameState
 }
 
-export function setStatusState(state){
-    statusState = state;
+export function setGameState(state){
+    gameState = state;
 
-    if (state == "hidden"){
-        statusEl.classList.add("status-banner-hidden");
-    } else {
+    console.log(state)
+    if (state.startsWith("prompt-")){
         statusEl.classList.remove("status-banner-hidden");
+    } else {
+        statusEl.classList.add("status-banner-hidden");
     }
 
-    if (state == "ready"){
+    if (state === "prompt-start"){
         statusTitleEl.textContent = "Ready?";
         statusContentEl.textContent = "Press Enter to start";
     }
-    else if (state == "pause"){
+    else if (state === "prompt-pause"){
         statusTitleEl.textContent = "Paused";
         statusContentEl.textContent = "Press P to continue";
     }
-    else if (state == "over"){
+    else if (state === "prompt-over"){
         statusTitleEl.textContent = "Game Over";
         statusContentEl.textContent = "Press Enter to restart";
     }

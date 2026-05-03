@@ -1,4 +1,4 @@
-import { boardWidth, boardHeight, stepTimeSec, scoreIncrement, maxLives, flushCellClass, boardEl, piecesTemplate, rotations, types, setStatusState, getStatusState } from "./global.js";
+import { boardWidth, boardHeight, stepTimeSec, scoreIncrement, maxLives, flushCellClass, boardEl, piecesTemplate, rotations, types, setGameState, getGameState } from "./global.js";
 
 let isPaused = true;
 let stepTimer = 0.0;
@@ -145,13 +145,11 @@ function spawnNextPiece(){
 
         if (livesLeft === 0){
             // TODO: end game
-            setStatusState("over");
+            setGameState("prompt-over");
             return
         } else {
             // TODO: restart?
         }
-
-        console.log("GAME OVER");
     } else {
         placePieceAt(currPieceX, currPieceY, currPieceType, currPieceRotation);
     }
@@ -278,17 +276,22 @@ export function update(timestamp){
         return;
     }
 
-    const delta = (timestamp - lastTime) / 1000;
-    lastTime = timestamp;
-    stepTimer += delta;
-
-    window.dispatchEvent(new CustomEvent('game-time-increment', {detail: {delta:delta}}));
-
-    if (stepTimer >= stepTimeSec){
-        // move current piece +1Y
-        stepTimer = 0.0;
-        fall();
+    let gameState = getGameState();
+    
+    if (gameState === "game"){
+        const delta = (timestamp - lastTime) / 1000;
+        lastTime = timestamp;
+        stepTimer += delta;
+    
+        window.dispatchEvent(new CustomEvent('game-time-increment', {detail: {delta:delta}}));
+    
+        if (stepTimer >= stepTimeSec){
+            // move current piece +1Y
+            stepTimer = 0.0;
+            fall();
+        }
     }
+
 
     requestAnimationFrame(update);
 }
@@ -299,10 +302,9 @@ addEventListener("keydown", (ev) => {
     if (isPaused){
         switch (ev.key){
             case "Enter":
-                console.log(getStatusState()=== "over")
-                if (getStatusState() === "ready"){
+                if (getGameState() === "prompt-start"){
                     isPaused = false;
-                    setStatusState("hidden");
+                    setGameState("game");
                 }
                 break;
         }
@@ -311,11 +313,11 @@ addEventListener("keydown", (ev) => {
 
     switch (ev.key){
         case "Enter":
-            if (getStatusState() === "over"){
+            if (getGameState() === "prompt-over"){
                 // TODO: reset everything
                 location.reload(); // or just refresh page ¯\_(ツ)_/¯
                 isPaused = false;
-                setStatusState("hidden");
+                setGameState("game");
             }
             break;
 
@@ -353,11 +355,12 @@ addEventListener("keydown", (ev) => {
     }
 });
 
-addEventListener("menu-pause", (ev) => {
-    isPaused = ev.detail.isPaused;
-    if (isPaused){
-        setStatusState("pause");
-    } else if (getStatusState() == "pause") {
-        setStatusState("hidden");
+addEventListener("toggle-pause", (ev) => {
+    if (isPaused === false && getGameState() === "game"){
+        isPaused = true;
+        setGameState("prompt-pause");
+    } else if (isPaused && getGameState() === "prompt-pause") {
+        isPaused = false;
+        setGameState("game");
     }
 });
