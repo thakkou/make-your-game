@@ -13,7 +13,7 @@ let fullCells = []; // {x, y, type}
 let livesLeft = maxLives;
 
 // setup
-export function setup() {
+export function setupBoard() {
     window.dispatchEvent(new CustomEvent('game-lives-decrement', {detail: {lives:livesLeft}}));
 
     // setup cells

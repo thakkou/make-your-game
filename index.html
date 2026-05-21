@@ -5,12 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" type="image/x-icon" href="/favicon.ico">
 <title>TETRIS</title>
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="assets/styles.css">
 
-<script type="module" src="global.js"></script>
-<script type="module" src="panels.js"></script>
-<script type="module" src="functions.js"></script>
-<script type="module" src="main.js"></script>
+<script type="module" src="scripts/global.js"></script>
+<script type="module" src="scripts/main.js"></script>
+<script type="module" src="scripts/functions.js"></script>
+<script type="module" src="scripts/panels.js"></script>  <!-- menus -->
 </head>
 <body>
   <noscript>
@@ -27,7 +27,7 @@
   <div class="game-wrapper">
 
     <!-- LEFT PANEL -->
-    <div class="side">
+    <div id="left-side" class="side">
 
       <h1>Tetris</h1>
       <div class="panel">
@@ -47,7 +47,7 @@
     </div>
 
     <!-- BOARD -->
-    <div class="board-container">
+    <div id="board-container" class="board-container">
       <div class="board">
         <!-- board is setup in js -->
       </div>
@@ -61,7 +61,7 @@
     </div><!-- /board-container -->
 
     <!-- RIGHT PANEL -->
-    <div class="side">
+    <div id="right-side" class="side">
 
       <div class="panel">
         <div class="panel-label">Next Piece</div>
@@ -102,9 +102,8 @@
 
       <div class="panel">
         <div class="panel-label">High Score</div>
-        <div class="panel-highscore panel-value" style="font-size:1.1rem;">0</div>
+        <div class="panel-highscore panel-value">0</div>
       </div>
-
     </div>
 
   </div><!-- /game-wrapper -->

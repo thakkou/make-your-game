@@ -40,24 +40,44 @@ body {
     justify-content: center;
     padding: 24px;
     letter-spacing: 0.05em;
+
+    /* for responsiveness */
+    min-width: 0;
+    overflow-x: hidden;
 }
 
 /* ── TITLE ────────────────────────────────────── */
 h1 {
-    font-size: 2.6rem;
+    font-size: 5.2rem;
     font-weight: 900;
     text-transform: uppercase;
     margin-bottom: 24px;
     color: var(--accent);
     border-bottom: 3px solid var(--accent);
     padding-bottom: 6px;
+    width: 100%;
 }
 
 /* ── LAYOUT ───────────────────────────────────── */
 .game-wrapper {
     display: flex;
+    flex-wrap: wrap;
     gap: 20px;
     align-items: flex-start;
+    justify-content: center;
+    max-width: 100%;
+}
+
+@media (max-width: 650px) {
+    .game-wrapper {
+        transform: scale(0.6);
+    }
+}
+
+@media (max-width: 700px) {
+    .side, .board {
+        width: 100%;
+    }
 }
 
 /* ── BOARD ────────────────────────────────────── */
@@ -141,18 +161,22 @@ h1 {
 .side {
     display: flex;
     flex-direction: column;
-    gap: 16px;
-    width: 140px;
+    justify-content: space-between;
+    gap: 16px; /* unuseful */
+
+    /* same size as board container */
+    height: 625.8px;
+    width: 315.8px;
 }
 
 .panel {
     border: 3px solid var(--border);
     background: var(--panel);
-    padding: 14px 12px;
+    padding: 24px 12px;
 }
 
 .panel-label {
-    font-size: 0.65rem;
+    font-size: 1.5rem;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.2em;
@@ -163,7 +187,7 @@ h1 {
 }
 
 .panel-value {
-    font-size: 1.5rem;
+    font-size: 2.2rem;
     font-weight: 900;
     color: var(--accent);
     letter-spacing: 0.1em;
@@ -184,6 +208,13 @@ h1 {
     width: 22px;
     height: 22px;
     background: #111;
+}
+
+/* --- */
+
+.next-grid,
+.hold-grid {
+    display: inline-grid;
 }
 
 /* ── HOLD ─────────────────────────────────────── */
@@ -218,8 +249,8 @@ h1 {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 0.62rem;
-    color: var(--dim);
+    font-size: 1.5rem;
+    color: var(--accent);
 }
 
 .key {
@@ -227,7 +258,7 @@ h1 {
     border: 1px solid var(--border);
     color: var(--text);
     font-family: inherit;
-    font-size: 0.6rem;
+    font-size: 1.2rem;
     padding: 2px 5px;
     letter-spacing: 0;
 }
@@ -252,7 +283,7 @@ h1 {
 }
 
 .status-title {
-    font-size: 1.4rem;
+    font-size: 1.8rem;
     font-weight: 900;
     letter-spacing: 0.25em;
     text-transform: uppercase;
@@ -260,24 +291,9 @@ h1 {
 }
 
 .status-sub {
-    font-size: 0.7rem;
-    color: var(--dim);
+    font-size: 1rem;
+    color: var(--accent);
     margin-top: 6px;
     letter-spacing: 0.15em;
     text-transform: uppercase;
-}
-
-/* ── FOOTER ───────────────────────────────────── */
-footer {
-    margin-top: 20px;
-    font-size: 0.6rem;
-    color: var(--dim);
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-}
-
-@media (max-width: 650px) {
-    .game-wrapper{
-        transform: scale(0.6); 
-    }
 }
