@@ -1,11 +1,12 @@
 import { setupBoard, update } from "./functions.js";
 import { setGameState } from "./global.js"
 
-setupBoard(); // script already deffered in html
+setupBoard();
 
 // game loop
 setGameState("prompt-start");
 requestAnimationFrame(update);
+
 
 // import { boardEl } from "./global.js";
 // import { setupBoard, update } from "./functions.js";

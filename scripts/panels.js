@@ -15,14 +15,16 @@ addEventListener("keydown", (ev) => {
 
 addEventListener("game-time-increment", (ev) => {
     timer += ev.detail.delta;
-    const minutes = Math.floor(timer);
-    const seconds = Math.floor((timer % 1) * 60);
+    const minutes = Math.floor(timer / 60);
+    const seconds = Math.floor(timer % 60);
     timerEl.textContent = `${minutes}:${seconds.toString().padStart(2, "0")}`;
 });
 
 addEventListener("game-score-increment", (ev) => {
     score += ev.detail.score;
     scoreEl.textContent = score;
+
+    setHighscore();
 });
 
 addEventListener("game-next-piece-chosen", (ev) => {
@@ -50,6 +52,12 @@ addEventListener("game-lives-decrement", (ev) => {
 });
 
 addEventListener("game-over", (ev) => {
-    highScoreEl.textContent = score;
-    localStorage.setItem("highScore", score);
+    setHighscore();
 });
+
+function setHighscore(){
+    if (Number(highScoreEl.textContent) < score){
+        highScoreEl.textContent = score;
+        localStorage.setItem("highScore", score);
+    }
+}

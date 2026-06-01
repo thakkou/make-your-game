@@ -35,6 +35,7 @@ export function setupBoard() {
 
     // next piece
     nextPieceType = types[Math.floor(Math.random() * types.length)];
+    window.dispatchEvent(new CustomEvent('game-next-piece-chosen', {detail: {pieceType:nextPieceType, piece:piecesCache[nextPieceType][0]}}));
 
     // start game
     spawnNextPiece();
@@ -317,7 +318,6 @@ export function update(timestamp){
         }
     }
 
-
     requestAnimationFrame(update);
 }
 
@@ -339,8 +339,7 @@ addEventListener("keydown", (ev) => {
     switch (ev.key){
         case "Enter":
             if (getGameState() === "prompt-over"){
-                // TODO: reset everything
-                location.reload(); // or just refresh page ¯\_(ツ)_/¯
+                location.reload(); // ¯\_(ツ)_/¯
                 isPaused = false;
                 setGameState("game");
             }
@@ -385,7 +384,12 @@ addEventListener("keydown", (ev) => {
 
         case " ":
             if (getGameState() === "game"){
-                // TODO: drop down, or remove feature
+                // drop down
+                let currHeight = currPieceY;
+                while (canPlacePieceAt(currPieceX, currHeight+1, currPieceType, currPieceRotation)){
+                    fall();
+                    currHeight++;
+                }
             }
             break;
     }
