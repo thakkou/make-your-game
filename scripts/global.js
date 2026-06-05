@@ -90,7 +90,7 @@ export function setGameState(state){
     }
     else if (state === "prompt-pause"){
         statusTitleEl.textContent = "Paused";
-        statusContentEl.textContent = "Press P to continue";
+        statusContentEl.textContent = "Press P to continue, R to restart";
     }
     else if (state === "prompt-over"){
         statusTitleEl.textContent = "Game Over";

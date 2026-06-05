@@ -1,4 +1,4 @@
-import {maxLives, flushCellClass, nextPieceGridEl, scoreEl, highScoreEl, livesEl, timerEl} from "./global.js";
+import {maxLives, flushCellClass, nextPieceGridEl, scoreEl, highScoreEl, livesEl, timerEl, getGameState} from "./global.js";
 
 let score = 0;
 let timer = 0.0;
@@ -10,6 +10,8 @@ highScoreEl.textContent = localStorage.getItem("highScore") ?? 0;
 addEventListener("keydown", (ev) => {
     if (ev.key == "p"){
         window.dispatchEvent(new CustomEvent('toggle-pause'));
+    } else if (ev.key == "r" && getGameState() === "prompt-pause"){
+        location.reload()
     }
 });
 

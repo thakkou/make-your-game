@@ -340,8 +340,6 @@ addEventListener("keydown", (ev) => {
         case "Enter":
             if (getGameState() === "prompt-over"){
                 location.reload(); // ¯\_(ツ)_/¯
-                isPaused = false;
-                setGameState("game");
             }
             break;
 
