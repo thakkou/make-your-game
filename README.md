@@ -6,16 +6,12 @@ Single player only game made with pure JS
 
 Tetris (from pre-approved list)
 
----
-
 ## Project Structure
 
 The game relies on CSS grid for layout and `RequestAnimationFrame` for logic.
 - `global.js` global variables shared between scripts
 - `game.js` game logic (fall, controls, win/lose...)
 - `panels.js` menu logic (score, timer, lives...)
-
----
 
 ## Requirements:
 
@@ -40,8 +36,6 @@ The game relies on CSS grid for layout and `RequestAnimationFrame` for logic.
 
 * No frameworks or canvas: the game must be implemented using plain JS/DOM and HTML only
 
----
-
 ## Info
 
 * Dev Tools
@@ -58,9 +52,7 @@ The game relies on CSS grid for layout and `RequestAnimationFrame` for logic.
     3. In the search bar, type: "javascript.enabled"
     4. Click the setting's toggle button
 
----
-
 ## Authors
 
-- thakkou - [Github](https://github/thakkou)
-- mbelhouss - [Github](https://github/DissonantVoid)
+- [thakkou](https://github/thakkou)
+- [mbelhouss](https://github/DissonantVoid)

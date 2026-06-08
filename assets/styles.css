@@ -131,6 +131,13 @@ h1 {
     background: var(--c-L);
 }
 
+/* Ghost piece */
+.cell.ghost {
+    background: transparent;
+    outline: 2px solid var(--dim);
+    outline-offset: -2px;
+}
+
 /* Active (falling) piece highlight */
 .cell.active { /* NOT USED */
     filter: brightness(1.25);
@@ -249,7 +256,7 @@ h1 {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     color: var(--accent);
 }
 

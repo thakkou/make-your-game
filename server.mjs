@@ -1,6 +1,6 @@
-const http = require('http');
-const fs = require('fs');
-const path = require('path');
+import http from 'node:http';
+import fs from 'node:fs';
+import path from 'node:path';
 
 const PORT = 3000;
 
@@ -9,10 +9,10 @@ const MIME_TYPES = {
     '.html': 'text/html',
     '.css': 'text/css',
     '.js': 'application/javascript',
-    '.json': 'application/json',
-    '.png': 'image/png',
-    '.jpg': 'image/jpeg',
-    '.svg': 'image/svg+xml',
+    // '.json': 'application/json',
+    // '.png': 'image/png',
+    // '.jpg': 'image/jpeg',
+    // '.svg': 'image/svg+xml',
     '.ico': 'image/x-icon',
 };
 
@@ -21,7 +21,7 @@ const server = http.createServer((req, res) => {
     const urlPath = req.url === '/' ? '/index.html' : req.url;
 
     // Resolve file path relative to this server.js file
-    const filePath = path.join(__dirname, urlPath);
+    const filePath = path.join('.', urlPath); // __dirname
     const ext = path.extname(filePath);
     const mimeType = MIME_TYPES[ext] || 'application/octet-stream';
 

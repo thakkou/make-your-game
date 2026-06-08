@@ -107,7 +107,7 @@ function canPlacePieceAt(x, y, pieceType, rotation){
  * @param {string} pieceType - type (O, I, L etc...)
  * @param {number} rotation - 90 degrees interval
  */
-function placePieceAt(x, y, pieceType, rotation) {
+function placePieceAt(x, y, pieceType, rotation, isShadow) {
     // render to dom
     const shape = piecesCache[pieceType][rotation];
     let height = shape.length, width = shape[0].length;
@@ -119,7 +119,13 @@ function placePieceAt(x, y, pieceType, rotation) {
                 const boardY = y + row;
 
                 const index = boardY * boardWidth + boardX;
-                cells[index].classList.add(pieceType);
+                if (isShadow) {
+                    if (cells[index].classList.length === 1) {
+                        cells[index].classList.add('ghost');
+                    }
+                } else {
+                    cells[index].classList.add(pieceType);
+                }
             }
         }
     }
@@ -205,6 +211,23 @@ function getCompletedLines(){
     console.log("Completed Lines: ", ret);
     return ret;
 }
+
+// ****************************************
+
+function eraseShadow() {
+    document.querySelectorAll('.cell').forEach(e => e.classList.remove('ghost'))
+}
+
+function placeShadow() {
+    eraseShadow();
+    let shadowY = currPieceY;
+    while(canPlacePieceAt(currPieceX, shadowY + 1, currPieceType, currPieceRotation)) {
+        shadowY++;
+    }
+    placePieceAt(currPieceX, shadowY, currPieceType, currPieceRotation, true);
+}
+
+// ****************************************
 
 /**
  * move the current piece down by one step
@@ -318,6 +341,7 @@ export function update(timestamp){
         }
     }
 
+    placeShadow(); //
     requestAnimationFrame(update);
 }
 
