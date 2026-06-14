@@ -1,16 +1,37 @@
-import { boardWidth, boardHeight, stepTimeSec, scoreIncrement, maxLives, isCellEmpty, flushCellClass, boardEl, piecesTemplate, rotations, types, setGameState, getGameState } from "./global.js";
+import { boardWidth, boardHeight, stepTimeSec, scoreIncrement, maxLives, boardEl, piecesTemplate, rotations, types, setGameState, getGameState, highScoreEl, stats } from "./globals.js";
 
-let isPaused = true;
+// let isPaused = true;
 let stepTimer = 0.0;
 let lastTime = 0.0;
 
-let currPieceType, currPieceX, currPieceY, currPieceRotation;
+export let currPieceType, currPieceX, currPieceY, currPieceRotation;
+export function setCurrPieceX(v) {
+    currPieceX = v;
+}
+export function setCurrPieceRotation(v) {
+    currPieceRotation = v;
+}
+
 let nextPieceType;
 
 let piecesCache = {}; // {type:{0:{...}, 90:{...}, 180:{...}, 270:{...}}}
 let fullCells = []; // {x, y, type}
 
 let livesLeft = maxLives;
+
+export function flushCellClass(cell){
+    cell.classList.remove(...types);
+}
+
+function isCellEmpty(cell){
+    for (let t of types){
+        if (cell.classList.contains(t)){
+            return false;
+        }
+    }
+    return true;
+    // use every or some instead
+}
 
 // setup
 export function setupBoard() {
@@ -67,7 +88,7 @@ function rotate90(current) {
  * @param {number} rotation - 90 degrees interval
  * @returns {boolean} false if placement is not possible
  */
-function canPlacePieceAt(x, y, pieceType, rotation){
+export function canPlacePieceAt(x, y, pieceType, rotation){
     if (!types.includes(pieceType) || !rotations.includes(rotation)) {
         // bad args
         return false;
@@ -107,7 +128,7 @@ function canPlacePieceAt(x, y, pieceType, rotation){
  * @param {string} pieceType - type (O, I, L etc...)
  * @param {number} rotation - 90 degrees interval
  */
-function placePieceAt(x, y, pieceType, rotation, isShadow) {
+export function placePieceAt(x, y, pieceType, rotation, isShadow) {
     // render to dom
     const shape = piecesCache[pieceType][rotation];
     let height = shape.length, width = shape[0].length;
@@ -169,7 +190,7 @@ function spawnNextPiece(){
 /**
  * "undo" render of current piece, used for animating a fall
  */
-function eraseCurrentPiece() {
+export function eraseCurrentPiece() {
     const shape = piecesCache[currPieceType][currPieceRotation];
     const cells = boardEl.children;
     const height = shape.length;
@@ -232,7 +253,7 @@ function placeShadow() {
 /**
  * move the current piece down by one step
  */
-function fall(){
+export function fall(){
     if (canPlacePieceAt(currPieceX, currPieceY+1, currPieceType, currPieceRotation) == false){ // hit the floor
         // add to fullCells
         const shape = piecesCache[currPieceType][currPieceRotation];
@@ -298,7 +319,7 @@ function fall(){
  * game logic, runs every `stepTimeSec`
  */
 export function update(timestamp){
-    if (isPaused){
+    if (stats.isPaused){
         lastTime = timestamp;
         requestAnimationFrame(update);
         return;
@@ -345,84 +366,9 @@ export function update(timestamp){
     requestAnimationFrame(update);
 }
 
-// events
-
-addEventListener("keydown", (ev) => {
-    if (isPaused){
-        switch (ev.key){
-            case "Enter":
-                if (getGameState() === "prompt-start"){
-                    isPaused = false;
-                    setGameState("game");
-                }
-                break;
-        }
-        return
+export function setHighscore(){
+    if (Number(highScoreEl.textContent) < stats.score){
+        highScoreEl.textContent = stats.score;
+        localStorage.setItem("highScore", stats.score);
     }
-
-    switch (ev.key){
-        case "Enter":
-            if (getGameState() === "prompt-over"){
-                location.reload(); // ¯\_(ツ)_/¯
-            }
-            break;
-
-        case "ArrowUp":
-            if (getGameState() === "game"){
-                const newRot = rotations[(rotations.indexOf(currPieceRotation) + 1) % rotations.length]; // next rotation
-                if (canPlacePieceAt(currPieceX, currPieceY, currPieceType, newRot)){
-                    eraseCurrentPiece();
-                    currPieceRotation = newRot;
-                    placePieceAt(currPieceX, currPieceY, currPieceType, currPieceRotation);
-                }
-            }
-            break;
-
-        case "ArrowDown":
-            if (getGameState() === "game"){
-                fall();
-            }
-            break;
-
-        case "ArrowLeft":
-            if (getGameState() === "game"){
-                if (canPlacePieceAt(currPieceX-1, currPieceY, currPieceType, currPieceRotation)){
-                    eraseCurrentPiece();
-                    currPieceX -= 1;
-                    placePieceAt(currPieceX, currPieceY, currPieceType, currPieceRotation);
-                }
-            }
-            break;
-
-        case "ArrowRight":
-            if (getGameState() === "game"){
-                if (canPlacePieceAt(currPieceX+1, currPieceY, currPieceType, currPieceRotation)){
-                    eraseCurrentPiece();
-                    currPieceX += 1;
-                    placePieceAt(currPieceX, currPieceY, currPieceType, currPieceRotation);
-                }
-            }
-            break;
-
-        case " ":
-            if (getGameState() === "game"){
-                // drop down
-                let currHeight = currPieceY;
-                while (canPlacePieceAt(currPieceX, currHeight+1, currPieceType, currPieceRotation)){
-                    fall();
-                    currHeight++;
-                }
-            }
-            break;
-    }
-});
-
-addEventListener("toggle-pause", (ev) => {
-    if (isPaused === false && getGameState() === "game"){
-        isPaused = true;
-        setGameState("prompt-pause");
-    } else if (isPaused && getGameState() === "prompt-pause") {
-        isPaused = false;
-        setGameState("game");
-    }
-});
+}

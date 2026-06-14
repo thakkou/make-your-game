@@ -1,6 +1,6 @@
-import http from 'node:http';
-import fs from 'node:fs';
-import path from 'node:path';
+import http from 'http';
+import fs from 'fs';
+import path from 'path';
 
 const PORT = 3000;
 
@@ -9,10 +9,6 @@ const MIME_TYPES = {
     '.html': 'text/html',
     '.css': 'text/css',
     '.js': 'application/javascript',
-    // '.json': 'application/json',
-    // '.png': 'image/png',
-    // '.jpg': 'image/jpeg',
-    // '.svg': 'image/svg+xml',
     '.ico': 'image/x-icon',
 };
 

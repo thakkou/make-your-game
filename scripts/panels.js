@@ -1,30 +1,16 @@
-import {maxLives, flushCellClass, nextPieceGridEl, scoreEl, highScoreEl, livesEl, timerEl, getGameState} from "./global.js";
-
-let score = 0;
-let timer = 0.0;
-
-highScoreEl.textContent = localStorage.getItem("highScore") ?? 0;
-
-// events
-
-addEventListener("keydown", (ev) => {
-    if (ev.key == "p"){
-        window.dispatchEvent(new CustomEvent('toggle-pause'));
-    } else if (ev.key == "r" && getGameState() === "prompt-pause"){
-        location.reload()
-    }
-});
+import { maxLives, nextPieceGridEl, scoreEl, highScoreEl, livesEl, timerEl, getGameState, stats } from "./globals.js";
+import { flushCellClass, setHighscore } from "./functions.js";
 
 addEventListener("game-time-increment", (ev) => {
-    timer += ev.detail.delta;
-    const minutes = Math.floor(timer / 60);
-    const seconds = Math.floor(timer % 60);
+    stats.timer += ev.detail.delta;
+    const minutes = Math.floor(stats.timer / 60);
+    const seconds = Math.floor(stats.timer % 60);
     timerEl.textContent = `${minutes}:${seconds.toString().padStart(2, "0")}`;
 });
 
 addEventListener("game-score-increment", (ev) => {
-    score += ev.detail.score;
-    scoreEl.textContent = score;
+    stats.score += ev.detail.score;
+    scoreEl.textContent = stats.score;
 
     setHighscore();
 });
@@ -56,10 +42,3 @@ addEventListener("game-lives-decrement", (ev) => {
 addEventListener("game-over", (ev) => {
     setHighscore();
 });
-
-function setHighscore(){
-    if (Number(highScoreEl.textContent) < score){
-        highScoreEl.textContent = score;
-        localStorage.setItem("highScore", score);
-    }
-}
