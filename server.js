@@ -16,6 +16,17 @@ const server = http.createServer((req, res) => {
     // Serve index.html for root requests
     const urlPath = req.url === '/' ? '/index.html' : req.url;
 
+    // Protection against directory enumeration
+    const ASSETS = path.resolve('./assets'), SCRIPTS = path.resolve('./scripts');
+    const decodedPath = decodeURIComponent(urlPath); // Decode URL (%20, etc.)
+    if (urlPath !== '/index.html' &&
+        !path.resolve(decodedPath).startsWith('/assets/') &&
+        !path.resolve(decodedPath).startsWith('/scripts/')
+    ) { // Prevent path traversal
+        res.writeHead(403, { 'Content-Type': 'text/plain' });
+        return res.end('403 - Forbidden');
+    }
+
     // Resolve file path relative to this server.js file
     const filePath = path.join('.', urlPath); // __dirname
     const ext = path.extname(filePath);
