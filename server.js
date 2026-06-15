@@ -28,7 +28,7 @@ const server = http.createServer((req, res) => {
     }
 
     // Resolve file path relative to this server.js file
-    const filePath = path.join('.', urlPath); // __dirname
+    const filePath = path.join('.', urlPath);
     const ext = path.extname(filePath);
     const mimeType = MIME_TYPES[ext] || 'application/octet-stream';
 

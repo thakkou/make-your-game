@@ -1,41 +1,16 @@
-import { boardWidth, boardHeight, stepTimeSec, scoreIncrement, maxLives, boardEl, piecesTemplate, rotations, types, setGameState, getGameState, highScoreEl, stats } from "./globals.js";
-
-// let isPaused = true;
-let stepTimer = 0.0;
-let lastTime = 0.0;
-
-export let currPieceType, currPieceX, currPieceY, currPieceRotation;
-export function setCurrPieceX(v) {
-    currPieceX = v;
-}
-export function setCurrPieceRotation(v) {
-    currPieceRotation = v;
-}
-
-let nextPieceType;
-
-let piecesCache = {}; // {type:{0:{...}, 90:{...}, 180:{...}, 270:{...}}}
-let fullCells = []; // {x, y, type}
-
-let livesLeft = maxLives;
+import { boardWidth, boardHeight, stepTimeSec, scoreIncrement, boardEl, piecesTemplate, rotations, types, setGameState, getGameState, highScoreEl, stats, piecesCache, currPiece, nextPiece, fullCells } from "./globals.js";
 
 export function flushCellClass(cell){
     cell.classList.remove(...types);
 }
 
 function isCellEmpty(cell){
-    for (let t of types){
-        if (cell.classList.contains(t)){
-            return false;
-        }
-    }
-    return true;
-    // use every or some instead
+    return types.every(t => !cell.classList.contains(t));
 }
 
 // setup
 export function setupBoard() {
-    window.dispatchEvent(new CustomEvent('game-lives-decrement', {detail: {lives:livesLeft}}));
+    window.dispatchEvent(new CustomEvent('game-lives-decrement', {detail: {lives:stats.livesLeft}}));
 
     // setup cells
     for (let i = 0; i < boardWidth * boardHeight; i++){
@@ -52,11 +27,11 @@ export function setupBoard() {
             current = rotate90(current);
         }
     }
-    console.log(piecesCache); // TEMP
+    // console.log(piecesCache); // TEMP
 
     // next piece
-    nextPieceType = types[Math.floor(Math.random() * types.length)];
-    window.dispatchEvent(new CustomEvent('game-next-piece-chosen', {detail: {pieceType:nextPieceType, piece:piecesCache[nextPieceType][0]}}));
+    nextPiece.type = types[Math.floor(Math.random() * types.length)];
+    window.dispatchEvent(new CustomEvent('game-next-piece-chosen', {detail: {pieceType:nextPiece.type, piece:piecesCache[nextPiece.type][0]}}));
 
     // start game
     spawnNextPiece();
@@ -153,37 +128,37 @@ export function placePieceAt(x, y, pieceType, rotation, isShadow) {
 }
 
 /**
- * spawns a random piece at the top based on `nextPieceType`
+ * spawns a random piece at the top based on `nextPiece.type`
  */
 function spawnNextPiece(){
-    currPieceType = nextPieceType;
-    currPieceRotation = 0;
-    currPieceY = 0;
+    currPiece.type = nextPiece.type;
+    currPiece.Rotation = 0;
+    currPiece.Y = 0;
 
-    const shapeWidth = piecesCache[currPieceType][currPieceRotation][0].length;
-    currPieceX = Math.round((boardWidth - shapeWidth) / 2); // middle of board
+    const shapeWidth = piecesCache[currPiece.type][currPiece.Rotation][0].length;
+    currPiece.X = Math.round((boardWidth - shapeWidth) / 2); // middle of board
     
-    nextPieceType = types[Math.floor(Math.random() * types.length)];
-    window.dispatchEvent(new CustomEvent('game-next-piece-chosen', {detail: {pieceType:nextPieceType, piece:piecesCache[nextPieceType][0]}}));
+    nextPiece.type = types[Math.floor(Math.random() * types.length)];
+    window.dispatchEvent(new CustomEvent('game-next-piece-chosen', {detail: {pieceType:nextPiece.type, piece:piecesCache[nextPiece.type][0]}}));
     
     // render
-    if (canPlacePieceAt(currPieceX, currPieceY, currPieceType, currPieceRotation) == false){
-        livesLeft--;
-        window.dispatchEvent(new CustomEvent('game-lives-decrement', {detail: {lives:livesLeft}}));
+    if (canPlacePieceAt(currPiece.X, currPiece.Y, currPiece.type, currPiece.Rotation) == false){
+        stats.livesLeft--;
+        window.dispatchEvent(new CustomEvent('game-lives-decrement', {detail: {lives:stats.livesLeft}}));
 
-        if (livesLeft === 0){
+        if (stats.livesLeft === 0){
             // game over, no more lives
             setGameState("prompt-over");
             window.dispatchEvent(new CustomEvent('game-over'));
             return;
         } else {
             // try again
-            fullCells = [];
+            fullCells.length = 0; // fullCells = [];
             setGameState("clear-all");
             return;
         }
     } else {
-        placePieceAt(currPieceX, currPieceY, currPieceType, currPieceRotation);
+        placePieceAt(currPiece.X, currPiece.Y, currPiece.type, currPiece.Rotation);
     }
 }
 
@@ -191,7 +166,7 @@ function spawnNextPiece(){
  * "undo" render of current piece, used for animating a fall
  */
 export function eraseCurrentPiece() {
-    const shape = piecesCache[currPieceType][currPieceRotation];
+    const shape = piecesCache[currPiece.type][currPiece.Rotation];
     const cells = boardEl.children;
     const height = shape.length;
     const width = shape[0].length;
@@ -199,8 +174,8 @@ export function eraseCurrentPiece() {
     for (let row = 0; row < height; row++) {
         for (let col = 0; col < width; col++) {
             if (shape[row][col] !== " ") {
-                const boardX = currPieceX + col;
-                const boardY = currPieceY + row;
+                const boardX = currPiece.X + col;
+                const boardY = currPiece.Y + row;
                 const index = boardY * boardWidth + boardX;
 
                 flushCellClass(cells[index]);
@@ -241,11 +216,11 @@ function eraseShadow() {
 
 function placeShadow() {
     eraseShadow();
-    let shadowY = currPieceY;
-    while(canPlacePieceAt(currPieceX, shadowY + 1, currPieceType, currPieceRotation)) {
+    let shadowY = currPiece.Y;
+    while(canPlacePieceAt(currPiece.X, shadowY + 1, currPiece.type, currPiece.Rotation)) {
         shadowY++;
     }
-    placePieceAt(currPieceX, shadowY, currPieceType, currPieceRotation, true);
+    placePieceAt(currPiece.X, shadowY, currPiece.type, currPiece.Rotation, true);
 }
 
 // ****************************************
@@ -254,18 +229,18 @@ function placeShadow() {
  * move the current piece down by one step
  */
 export function fall(){
-    if (canPlacePieceAt(currPieceX, currPieceY+1, currPieceType, currPieceRotation) == false){ // hit the floor
+    if (canPlacePieceAt(currPiece.X, currPiece.Y+1, currPiece.type, currPiece.Rotation) == false){ // hit the floor
         // add to fullCells
-        const shape = piecesCache[currPieceType][currPieceRotation];
+        const shape = piecesCache[currPiece.type][currPiece.Rotation];
         const height = shape.length;
         const width = shape[0].length;
         for (let row = 0; row < height; row++) {
             for (let col = 0; col < width; col++) {
                 if (shape[row][col] !== " ") {
-                    const boardX = currPieceX + col;
-                    const boardY = currPieceY + row;
+                    const boardX = currPiece.X + col;
+                    const boardY = currPiece.Y + row;
 
-                    fullCells.push({ x: boardX, y: boardY, type:currPieceType });
+                    fullCells.push({ x: boardX, y: boardY, type:currPiece.type });
                 }
             }
         }
@@ -308,8 +283,8 @@ export function fall(){
         spawnNextPiece();
     } else {
         eraseCurrentPiece();
-        currPieceY++;
-        placePieceAt(currPieceX, currPieceY, currPieceType, currPieceRotation);
+        currPiece.Y++;
+        placePieceAt(currPiece.X, currPiece.Y, currPiece.type, currPiece.Rotation);
     }
 }
 
@@ -320,7 +295,7 @@ export function fall(){
  */
 export function update(timestamp){
     if (stats.isPaused){
-        lastTime = timestamp;
+        stats.lastTime = timestamp;
         requestAnimationFrame(update);
         return;
     }
@@ -328,15 +303,15 @@ export function update(timestamp){
     let gameState = getGameState();
     
     if (gameState === "game"){
-        const delta = (timestamp - lastTime) / 1000;
-        lastTime = timestamp;
-        stepTimer += delta;
+        const delta = (timestamp - stats.lastTime) / 1000;
+        stats.lastTime = timestamp;
+        stats.stepTimer += delta;
     
         window.dispatchEvent(new CustomEvent('game-time-increment', {detail: {delta:delta}}));
     
-        if (stepTimer >= stepTimeSec){
+        if (stats.stepTimer >= stepTimeSec){
             // move current piece +1Y
-            stepTimer = 0.0;
+            stats.stepTimer = 0.0;
             fall();
         }
     }

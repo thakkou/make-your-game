@@ -1,7 +1,6 @@
-import { setGameState, highScoreEl, rotations, stats, getGameState } from "./globals.js"
+import { setGameState, highScoreEl, rotations, stats, currPiece, getGameState } from "./globals.js"
 import { setupBoard, update } from "./functions.js";
-import { fall, canPlacePieceAt, eraseCurrentPiece, placePieceAt, setCurrPieceRotation } from "./functions.js";
-import { currPieceType, currPieceX, currPieceY, currPieceRotation, setCurrPieceX } from "./functions.js"; // tmp
+import { fall, canPlacePieceAt, eraseCurrentPiece, placePieceAt } from "./functions.js";
 
 setupBoard();
 highScoreEl.textContent = localStorage.getItem("highScore") ?? 0;
@@ -46,11 +45,11 @@ addEventListener("keydown", (ev) => {
 
         case "ArrowUp":
             if (getGameState() === "game"){
-                const newRot = rotations[(rotations.indexOf(currPieceRotation) + 1) % rotations.length]; // next rotation
-                if (canPlacePieceAt(currPieceX, currPieceY, currPieceType, newRot)){
+                const newRot = rotations[(rotations.indexOf(currPiece.Rotation) + 1) % rotations.length]; // next rotation
+                if (canPlacePieceAt(currPiece.X, currPiece.Y, currPiece.type, newRot)){
                     eraseCurrentPiece();
-                    setCurrPieceRotation(newRot) // currPieceRotation = newRot;
-                    placePieceAt(currPieceX, currPieceY, currPieceType, currPieceRotation);
+                    currPiece.Rotation = newRot;
+                    placePieceAt(currPiece.X, currPiece.Y, currPiece.type, currPiece.Rotation);
                 }
             }
             break;
@@ -63,20 +62,20 @@ addEventListener("keydown", (ev) => {
 
         case "ArrowLeft":
             if (getGameState() === "game"){
-                if (canPlacePieceAt(currPieceX-1, currPieceY, currPieceType, currPieceRotation)){
+                if (canPlacePieceAt(currPiece.X-1, currPiece.Y, currPiece.type, currPiece.Rotation)){
                     eraseCurrentPiece();
-                    setCurrPieceX(currPieceX - 1) // currPieceX -= 1;
-                    placePieceAt(currPieceX, currPieceY, currPieceType, currPieceRotation);
+                    currPiece.X -= 1;
+                    placePieceAt(currPiece.X, currPiece.Y, currPiece.type, currPiece.Rotation);
                 }
             }
             break;
 
         case "ArrowRight":
             if (getGameState() === "game"){
-                if (canPlacePieceAt(currPieceX+1, currPieceY, currPieceType, currPieceRotation)){
+                if (canPlacePieceAt(currPiece.X+1, currPiece.Y, currPiece.type, currPiece.Rotation)){
                     eraseCurrentPiece();
-                    setCurrPieceX(currPieceX + 1) // currPieceX += 1;
-                    placePieceAt(currPieceX, currPieceY, currPieceType, currPieceRotation);
+                    currPiece.X += 1;
+                    placePieceAt(currPiece.X, currPiece.Y, currPiece.type, currPiece.Rotation);
                 }
             }
             break;
@@ -84,8 +83,8 @@ addEventListener("keydown", (ev) => {
         case " ":
             if (getGameState() === "game"){
                 // drop down
-                let currHeight = currPieceY;
-                while (canPlacePieceAt(currPieceX, currHeight+1, currPieceType, currPieceRotation)){
+                let currHeight = currPiece.Y;
+                while (canPlacePieceAt(currPiece.X, currHeight+1, currPiece.type, currPiece.Rotation)){
                     fall();
                     currHeight++;
                 }

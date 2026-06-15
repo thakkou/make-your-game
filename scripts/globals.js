@@ -57,11 +57,6 @@ const statusContentEl = statusEl.querySelector(".status-sub");
 // Game State
 
 let gameState = "ready";
-export const stats = {
-    score: 0,
-    timer: 0.0,
-    isPaused: true
-};
 
 export function getGameState(){
     return gameState;
@@ -90,3 +85,31 @@ export function setGameState(state){
         }
     }
 }
+
+// Game Data
+
+export const piecesCache = {}; // {type:{0:{...}, 90:{...}, 180:{...}, 270:{...}}}
+
+export const stats = {
+    score: 0,
+    timer: 0.0,
+    isPaused: true,
+    stepTimer: 0.0,
+    lastTime: 0.0,
+    livesLeft: maxLives,
+};
+
+export const fullCells = []; // {x, y, type}
+
+// Current & Next piece
+
+export const currPiece = {
+    type: undefined,
+    X: undefined,
+    Y: undefined,
+    Rotation: undefined,
+};
+
+export const nextPiece = {
+    type: undefined,
+};
