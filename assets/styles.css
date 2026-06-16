@@ -285,7 +285,7 @@ h1 {
     display: block;
 }
 
-.status-banner-hidden{
+.hidden{
     display: none !important;
 }
 

@@ -50,6 +50,7 @@ export const scoreEl = document.querySelector(".panel-score");
 export const highScoreEl = document.querySelector(".panel-highscore");
 export const livesEl = document.querySelector(".panel-lives");
 export const timerEl = document.querySelector(".panel-timer");
+export const scoreboardEl = document.querySelector("#scoreboard-banner");
 export const scoreSubmitEl = document.querySelector("#score-submit");
 const statusEl = document.querySelector("#status-banner");
 const statusTitleEl = statusEl.querySelector(".status-title");
@@ -70,24 +71,34 @@ export function getGameState(){
 
 export function setGameState(state){
     gameState = state;
+    statusEl.classList.add("hidden");
+    scoreSubmitEl.classList.add("hidden");
+    scoreboardEl.classList.add("hidden");
 
-    console.log(state)
     if (state.startsWith("prompt-")){
-        statusEl.classList.remove("status-banner-hidden");
+        statusEl.classList.remove("hidden");
+        const statuses = [
+            {state: "prompt-start", title: "Ready?", content: "Press Enter to start"},
+            {state: "prompt-pause", title: "Paused", content: "Press P to continue, R to restart"},
+            {state: "prompt-over", title: "Game Over", content: "Press Enter to restart"}
+        ];
+        for (let status of statuses) {
+            if (state === status.state) {
+                statusTitleEl.textContent = status.title;
+                statusContentEl.textContent = status.content;
+                break;
+            }
+        }
     } else {
-        statusEl.classList.add("status-banner-hidden");
+        statusEl.classList.add("hidden");
     }
 
-    const statuses = [
-        {state: "prompt-start", title: "Ready?", content: "Press Enter to start"},
-        {state: "prompt-pause", title: "Paused", content: "Press P to continue, R to restart"},
-        {state: "prompt-over", title: "Game Over", content: "Press Enter to restart"}
-    ];
-    for (let status of statuses) {
-        if (state === status.state) {
-            statusTitleEl.textContent = status.title;
-            statusContentEl.textContent = status.content;
-            break;
-        }
+    if (state === "score-submit"){
+        scoreSubmitEl.classList.remove("hidden")
     }
+
+    if (state === "score-show"){
+        scoreboardEl.classList.remove("hidden")
+    }
+
 }

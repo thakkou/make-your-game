@@ -1,10 +1,28 @@
 import { maxLives, nextPieceGridEl, scoreEl, highScoreEl, livesEl, timerEl, scoreSubmitEl, getGameState, stats } from "./globals.js";
 import { flushCellClass, setHighscore } from "./functions.js";
 
-scoreSubmitEl.addEventListener("submit", (ev) => {
+scoreSubmitEl.addEventListener("submit", async (ev) => {
     ev.preventDefault();
-    //...
-})
+
+    const name = scoreSubmitEl.querySelector("input").value.trim();
+    if (!name){
+        // empty
+        return;
+    }
+
+    const minutes = Math.floor(stats.timer / 60).toString().padStart(2, "0");
+    const seconds = Math.floor(stats.timer % 60).toString().padStart(2, "0");
+
+    const res = await fetch("http://localhost:8080/scores", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, score: stats.score, time: `${minutes}:${seconds}` })
+    });
+
+    const data = await res.json();
+    scoreSubmitEl.classList.add("hidden");
+    showScoreboard(data);
+});
 
 addEventListener("game-time-increment", (ev) => {
     stats.timer += ev.detail.delta;
