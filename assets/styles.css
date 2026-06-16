@@ -304,3 +304,23 @@ h1 {
     letter-spacing: 0.15em;
     text-transform: uppercase;
 }
+
+/* ── score-submit OVERLAY ───────────────────────────── */
+#score-submit{
+
+}
+
+/* ── Scoreboard OVERLAY ───────────────────────────── */
+#scoreboard-banner{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.88);
+    border: 3px solid var(--accent);
+    padding: 20px 32px;
+    text-align: center;
+    pointer-events: none;
+
+    display: block;
+}

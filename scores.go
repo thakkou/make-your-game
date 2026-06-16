@@ -42,7 +42,7 @@ var (
 
 // handleGet returns paginated scores
 // Query params: page (default 1)
-func handleGet(w http.ResponseWriter, r *http.Request) {
+func getScores(w http.ResponseWriter, r *http.Request) {
 	page := 1
 	if p := r.URL.Query().Get("page"); p != "" {
 		if n, err := strconv.Atoi(p); err == nil && n > 0 {
@@ -79,7 +79,7 @@ func handleGet(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusOK, resp)
 }
 
-func handlePost(w http.ResponseWriter, r *http.Request) {
+func setScores(w http.ResponseWriter, r *http.Request) {
 	var entry Entry
 	if err := json.NewDecoder(r.Body).Decode(&entry); err != nil {
 		http.Error(w, "invalid JSON body", http.StatusBadRequest)

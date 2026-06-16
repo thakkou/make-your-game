@@ -1,5 +1,10 @@
-import { maxLives, nextPieceGridEl, scoreEl, highScoreEl, livesEl, timerEl, getGameState, stats } from "./globals.js";
+import { maxLives, nextPieceGridEl, scoreEl, highScoreEl, livesEl, timerEl, scoreSubmitEl, getGameState, stats } from "./globals.js";
 import { flushCellClass, setHighscore } from "./functions.js";
+
+scoreSubmitEl.addEventListener("submit", (ev) => {
+    ev.preventDefault();
+    //...
+})
 
 addEventListener("game-time-increment", (ev) => {
     stats.timer += ev.detail.delta;

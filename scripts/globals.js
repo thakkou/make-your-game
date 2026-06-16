@@ -50,6 +50,7 @@ export const scoreEl = document.querySelector(".panel-score");
 export const highScoreEl = document.querySelector(".panel-highscore");
 export const livesEl = document.querySelector(".panel-lives");
 export const timerEl = document.querySelector(".panel-timer");
+export const scoreSubmitEl = document.querySelector("#score-submit");
 const statusEl = document.querySelector("#status-banner");
 const statusTitleEl = statusEl.querySelector(".status-title");
 const statusContentEl = statusEl.querySelector(".status-sub");
